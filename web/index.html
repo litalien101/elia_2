@@ -1,0 +1,2124 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#070d17">
+  <title>ELIA — Tested learning, made visible</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+      background: #070d17;
+      color: #e7eefb;
+      font-synthesis: none;
+      --panel: #0d1624;
+      --panel-2: #101d2e;
+      --border: #1c2c40;
+      --muted: #8293aa;
+      --cyan: #43d5ed;
+      --blue: #4e93ff;
+      --green: #46ddb0;
+      --amber: #f3bd62;
+      --red: #ff788a;
+    }
+    * { box-sizing: border-box; }
+    body { margin: 0; min-width: 320px; background: radial-gradient(ellipse at 70% -15%, #123048 0, transparent 42%), #070d17; }
+    button, input, textarea, select { font: inherit; }
+    button { cursor: pointer; }
+    .shell { min-height: 100vh; display: grid; grid-template-columns: 230px minmax(0, 1fr); }
+    aside { border-right: 1px solid var(--border); padding: 25px 17px; display: flex; flex-direction: column; gap: 28px; background: #09111c; }
+    .brand { display: grid; gap: 6px; }
+    .wordmark { display: block; width: 116px; height: 32px; }
+    .brand small { display: block; color: var(--muted); letter-spacing: .15em; font-size: 7px; font-weight: 500; }
+    nav { display: grid; gap: 8px; }
+    nav a { padding: 11px 12px; color: #93a6be; text-decoration: none; border: 1px solid transparent; border-radius: 9px; font-size: 13px; }
+    nav a:first-child, nav a:hover { background: #13243a; color: #eaf4ff; border-color: #1d3954; }
+    .side-note { margin-top: auto; border: 1px solid var(--border); border-radius: 12px; padding: 14px; color: var(--muted); font-size: 12px; line-height: 1.6; }
+    main { min-width: 0; padding: 27px clamp(16px, 3vw, 42px) 40px; max-width: 1680px; width: 100%; margin: 0 auto; }
+    header { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; margin-bottom: 23px; }
+    h1 { font-size: clamp(23px, 3vw, 34px); letter-spacing: -.04em; margin: 0 0 7px; font-weight: 620; }
+    .subtitle { margin: 0; color: var(--muted); font-size: 13px; }
+    .live { border: 1px solid #174538; background: #0b211e; color: #70e4bc; border-radius: 999px; padding: 8px 12px; white-space: nowrap; font-size: 11px; }
+    .live::before { content: ""; display: inline-block; width: 7px; height: 7px; background: var(--green); border-radius: 50%; margin: 0 8px 1px 0; box-shadow: 0 0 12px #46ddb0; }
+    .hero { display: grid; grid-template-columns: minmax(0, 1.55fr) minmax(260px, .85fr); gap: 14px; margin-bottom: 14px; }
+    .panel { border: 1px solid var(--border); border-radius: 13px; background: linear-gradient(140deg, #101d2d, #0b1420 75%); padding: 18px; min-width: 0; }
+    .hero-copy { display: flex; align-items: center; gap: 28px; min-height: 182px; overflow: hidden; position: relative; }
+    .hero-copy::after { content: ""; width: 175px; height: 175px; border: 1px solid #20516a; border-radius: 50%; position: absolute; right: -15px; opacity: .38; box-shadow: 0 0 0 18px #102436, 0 0 0 37px #0e2030, 0 0 60px #1e7790; }
+    .hero-copy h2 { font-size: 25px; font-weight: 580; margin: 0 0 10px; letter-spacing: -.035em; }
+    .hero-copy h2 span { color: var(--cyan); }
+    .hero-copy p { color: #a0b2c7; font-size: 13px; line-height: 1.6; margin: 0; max-width: 450px; }
+    .hero-stat { z-index: 1; margin-left: auto; padding-right: 16px; min-width: 105px; }
+    .hero-stat strong { display: block; color: var(--cyan); font-size: 30px; font-weight: 520; }
+    .hero-stat span { color: var(--muted); font-size: 10px; }
+    .score { display: flex; flex-direction: column; justify-content: center; }
+    .score h3, .section-title { margin: 0; font-size: 14px; font-weight: 560; }
+    .score-line { display: flex; justify-content: space-between; align-items: center; margin: 15px 0 8px; font-size: 11px; color: #a6b5c8; }
+    .score-line strong { color: #d9e7f6; font-size: 12px; font-weight: 550; }
+    .bar { height: 5px; background: #17273a; border-radius: 8px; overflow: hidden; }
+    .bar i { display: block; height: 100%; background: linear-gradient(90deg, #327fff, #49d5e7); border-radius: 8px; width: 0; transition: width .35s; }
+    .metrics { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; margin-bottom: 14px; }
+    .brain-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.4fr); gap: 14px; margin-bottom: 14px; }
+    .brain-stat { display: flex; justify-content: space-between; gap: 12px; padding: 9px 0; border-bottom: 1px solid #172638; color: var(--muted); font-size: 11px; }
+    .brain-stat:last-child { border-bottom: 0; }
+    .brain-stat strong { color: #dce8f5; font-weight: 550; }
+    .specialist-row { display: grid; grid-template-columns: minmax(0,1fr) auto auto; gap: 11px; align-items: center; padding: 9px 10px; border: 1px solid #172638; background: #0b1521; border-radius: 8px; }
+    .specialist-row strong { font-size: 11px; font-weight: 550; overflow: hidden; text-overflow: ellipsis; }
+    .specialist-row span { color: var(--muted); font-size: 9px; }
+    .metric { padding: 15px 16px; }
+    .metric-label { color: var(--muted); font-size: 11px; display: block; margin-bottom: 10px; }
+    .metric-value { font-size: 25px; letter-spacing: -.03em; font-weight: 580; }
+    .metric-foot { display: block; font-size: 10px; color: #72869e; margin-top: 7px; }
+    .cols { display: grid; grid-template-columns: minmax(0, 1.3fr) minmax(300px, .9fr); gap: 14px; margin-bottom: 14px; }
+    .section-head { display: flex; justify-content: space-between; gap: 12px; align-items: center; margin-bottom: 13px; }
+    .section-head small { color: var(--muted); font-size: 10px; }
+    .list { display: grid; gap: 8px; max-height: 300px; overflow: auto; }
+    .row { display: grid; grid-template-columns: 10px minmax(0, 1fr) auto auto; align-items: center; gap: 10px; padding: 10px 11px; background: #0b1521; border: 1px solid #142337; border-radius: 8px; }
+    .dot { width: 7px; height: 7px; background: var(--cyan); border-radius: 50%; }
+    .row-copy { min-width: 0; display: grid; gap: 4px; }
+    .row-copy strong { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 11px; font-weight: 520; }
+    .row-copy span, .row time { color: var(--muted); font-size: 9px; }
+    .evidence-detail { color: #a8bbce; font-size: 10px; }
+    .evidence-detail summary { padding: 2px 0; color: #74cfe0; font-size: 9px; cursor: pointer; }
+    .evidence-detail summary::after { content: ""; }
+    .evidence-line { border-left: 1px solid #28516c; margin: 4px 0 0 3px; padding: 2px 7px; line-height: 1.5; }
+    .forget-button { background: #26171d; border-color: #56303a; color: #ffabb5; padding: 5px 7px; font-size: 9px; }
+    .badge { color: #91dfea; border: 1px solid #205160; background: #0b2029; padding: 4px 7px; border-radius: 999px; font-size: 9px; text-transform: uppercase; letter-spacing: .04em; }
+    .badge.validated { color: var(--green); border-color: #1a5744; background: #0b211b; }
+    .badge.challenged { color: var(--amber); border-color: #644721; background: #261d10; }
+    .memory-box { display: grid; gap: 10px; }
+    .memory-stat { display: grid; gap: 6px; padding: 10px 12px; border: 1px solid var(--border); border-radius: 10px; background: #0b1521; }
+    .memory-stat strong { font-size: 13px; font-weight: 600; }
+    .memory-stat span { color: var(--muted); font-size: 11px; line-height: 1.55; }
+    .memory-actions { display: flex; gap: 10px; align-items: end; flex-wrap: wrap; }
+    .memory-actions label { display: grid; gap: 4px; font-size: 10px; color: var(--muted); }
+    .memory-actions input { width: 90px; border: 1px solid var(--border); background: #0d1724; color: #e7eefb; border-radius: 8px; padding: 8px 9px; }
+    .memory-actions button { border: 1px solid #214b66; background: #0e2437; color: #dff8ff; border-radius: 8px; padding: 8px 10px; }
+    .empty { border: 1px dashed #26384c; padding: 22px; text-align: center; border-radius: 9px; color: var(--muted); font-size: 11px; }
+    details.panel { padding: 0; overflow: hidden; }
+    details summary { list-style: none; padding: 16px 18px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; font-size: 13px; }
+    details summary::-webkit-details-marker { display: none; }
+    details summary::after { content: "+"; color: var(--cyan); font-size: 18px; }
+    details[open] summary::after { content: "−"; }
+    .forms { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; padding: 0 14px 14px; }
+    form { border: 1px solid var(--border); background: #0a1420; border-radius: 10px; padding: 13px; display: grid; gap: 9px; align-content: start; }
+    form h3 { margin: 0 0 2px; font-size: 12px; color: #d8e7f7; font-weight: 550; }
+    input, textarea, select { color: #e1eaf5; background: #0d1927; border: 1px solid #25374b; border-radius: 6px; padding: 9px 10px; width: 100%; outline: none; font-size: 11px; }
+    input:focus, textarea:focus, select:focus { border-color: #338fa4; box-shadow: 0 0 0 2px #1c798522; }
+    textarea { min-height: 68px; resize: vertical; }
+    button { background: #163b56; border: 1px solid #246083; color: #e5f7ff; border-radius: 6px; padding: 9px 11px; font-size: 11px; }
+    button:hover { background: #1c4c6e; }
+    button.secondary { background: #172337; border-color: #293a52; color: #c0cee0; }
+    .hint { color: var(--muted); font-size: 9px; line-height: 1.5; }
+    .notice { position: fixed; bottom: 17px; right: 17px; max-width: min(420px, calc(100vw - 34px)); background: #132537; border: 1px solid #28516c; border-radius: 9px; padding: 12px 14px; font-size: 11px; box-shadow: 0 12px 40px #0008; display: none; z-index: 4; }
+    .notice.error { border-color: #7a3440; color: #ffb0b8; }
+    footer { color: #6f8299; font-size: 10px; padding: 4px 2px; display: flex; justify-content: space-between; gap: 12px; }
+    @media (max-width: 900px) { .shell { grid-template-columns: 1fr; } aside { padding: 13px 16px; flex-direction: row; align-items: center; justify-content: space-between; border-right: 0; border-bottom: 1px solid var(--border); } nav, .side-note { display: none; } main { padding-top: 20px; } }
+    @media (max-width: 690px) { .hero, .cols { grid-template-columns: 1fr; } .metrics { grid-template-columns: repeat(2, minmax(0, 1fr)); } .forms { grid-template-columns: 1fr; } .hero-copy { min-height: 155px; } .hero-stat { display: none; } header { align-items: center; } }
+    :root {
+      --panel: #111923;
+      --panel-2: #18232f;
+      --border: #263442;
+      --muted: #92a0ad;
+      --cyan: #83b8ff;
+      --blue: #6da8ff;
+      --green: #8ddc83;
+      --amber: #e6b36c;
+      font-family: Inter, "Segoe UI", sans-serif;
+      background: #0a1017;
+      color: #e4eaf0;
+    }
+    body { background: #0a1017; }
+    .topbar { height: 50px; display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 0 19px; border-bottom: 1px solid #28323d; background: #0c131b; }
+    .topbar-title { display: flex; align-items: center; gap: 13px; color: #aab6c1; font-size: 11px; }
+    .topbar-title strong { color: #eff4f7; font-size: 13px; letter-spacing: .02em; }
+    .topbar-title span { color: #768695; }
+    .topbar-actions { display: flex; align-items: center; gap: 10px; }
+    .topbar .live { border-radius: 5px; padding: 6px 9px; font-size: 10px; }
+    .shell { min-height: calc(100vh - 50px); grid-template-columns: 190px minmax(400px, 1fr) 320px; gap: 0; }
+    .shell > aside:first-child { padding: 22px 14px 16px; gap: 28px; background: #0c131b; border-right: 1px solid #26323d; }
+    .brand { padding: 0 9px; gap: 8px; }
+    .wordmark { color: #d9e8f4; width: 112px; }
+    .brand small { color: #71808d; font-size: 7px; letter-spacing: .17em; }
+    nav { gap: 5px; }
+    nav a { padding: 10px 11px; font-size: 11px; border-radius: 5px; }
+    nav a:first-child, nav a:hover { color: #e8f2ff; background: #1b2d41; border-color: #30475c; }
+    .side-note { margin: 0; padding: 12px; border-radius: 7px; background: #111b25; font-size: 10px; }
+    main { padding: 23px 22px 24px; max-width: none; }
+    header { margin-bottom: 17px; align-items: center; }
+    h1 { font-size: 21px; letter-spacing: -.025em; margin-bottom: 5px; }
+    .subtitle { font-size: 11px; }
+    .panel { border-radius: 8px; border-color: #273541; background: #111a23; padding: 14px; }
+    .graph-panel { padding: 14px 14px 10px; margin-bottom: 12px; }
+    .graph-panel .section-head { margin-bottom: 0; }
+    .voice-panel { display: grid; gap: 9px; margin-bottom: 12px; }
+    .voice-panel .section-head { margin-bottom: 0; }
+    .voice-panel textarea { min-height: 56px; }
+    .voice-controls { display: flex; flex-wrap: wrap; gap: 8px; }
+    .voice-controls button { width: auto; }
+    #voice-answer { white-space: pre-wrap; overflow-wrap: anywhere; }
+    #voice-audio { width: 100%; }
+    .graph-controls { display: flex; align-items: center; gap: 6px; }
+    .graph-controls button { width: 28px; height: 26px; padding: 0; font-size: 13px; }
+    .graph-controls button:last-of-type { width: auto; padding: 0 8px; font-size: 9px; }
+    .graph-controls select { width: auto; min-width: 100px; padding: 6px 8px; font-size: 9px; }
+    .graph-wrap { width: 100%; height: clamp(300px, 37vw, 440px); position: relative; overflow: hidden; border-radius: 6px; background: radial-gradient(ellipse at 50% 48%, #142537 0, #0d1722 48%, #0c151d 100%); }
+    #cognitive-map { display: block; width: 100%; height: 100%; touch-action: none; cursor: grab; outline: none; }
+    #cognitive-map:active { cursor: grabbing; }
+    #cognitive-map:focus-visible { box-shadow: inset 0 0 0 2px #81baff; }
+    .graph-instructions { position: absolute; left: 12px; bottom: 10px; pointer-events: none; color: #899baa; font-size: 9px; text-shadow: 0 1px 5px #000; }
+    .graph-count { position: absolute; right: 12px; bottom: 10px; pointer-events: none; color: #899baa; font-size: 9px; text-align: right; }
+    .graph-activity { position: absolute; top: 12px; left: 12px; padding: 6px 9px; border: 1px solid #77c5aa66; border-radius: 20px; background: #10251fe8; color: #a5e9c5; font-size: 9px; letter-spacing: .06em; opacity: 0; transform: translateY(-5px); transition: opacity .35s ease, transform .35s ease; pointer-events: none; }
+    .graph-activity.active { opacity: 1; transform: translateY(0); }
+    @media (prefers-reduced-motion: reduce) { .graph-activity { transition: none; } }
+    .graph-detail { position: absolute; right: 12px; top: 12px; width: min(260px, 45%); max-height: calc(100% - 52px); overflow: auto; padding: 11px 12px; border: 1px solid #41556a; border-radius: 7px; background: #0c151deb; box-shadow: 0 8px 28px #0008; }
+    .graph-detail[hidden] { display: none; }
+    .graph-detail-head { display: flex; justify-content: space-between; align-items: center; gap: 8px; margin-bottom: 6px; }
+    .graph-detail-head strong { color: #e1eef9; font-size: 10px; overflow-wrap: anywhere; }
+    .graph-detail-head button { padding: 2px 7px; }
+    .graph-detail-kind { color: #85baff; font-size: 8px; text-transform: uppercase; letter-spacing: .1em; }
+    .graph-detail-copy { color: #a3b3c2; white-space: pre-wrap; overflow-wrap: anywhere; font-size: 9px; line-height: 1.55; }
+    .graph-legend { display: flex; flex-wrap: wrap; gap: 13px; color: #8a98a6; font-size: 9px; padding: 6px 2px 1px; }
+    .graph-legend span::before { content: ""; display: inline-block; width: 6px; height: 6px; margin: 0 6px 1px 0; border-radius: 50%; background: #a9cfff; }
+    .graph-legend span:nth-child(2)::before { background: #71b8d7; }
+    .graph-legend span:nth-child(3)::before { background: #9fe0a5; }
+    .graph-legend span:nth-child(4)::before { background: #e5b67f; }
+    .metrics { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 9px; margin-bottom: 12px; }
+    .metric { padding: 12px; border-radius: 7px; }
+    .metric-label { margin-bottom: 8px; font-size: 9px; }
+    .metric-value { font-size: 22px; font-weight: 560; }
+    .metric-foot { font-size: 9px; }
+    .trend-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; margin-bottom: 12px; }
+    .trend-panel { padding: 12px 13px 8px; }
+    .trend-panel .section-head { margin-bottom: 4px; }
+    .trend-panel svg { display: block; width: 100%; height: 100px; overflow: visible; }
+    .trend-panel .trend-gridline { stroke: #293844; stroke-width: 1; }
+    .trend-panel .trend-line { fill: none; stroke: #76aef4; stroke-width: 2; }
+    .trend-panel .trend-line.surprise { stroke: #a4d87f; }
+    .trend-panel .trend-point { fill: #abd1ff; stroke: #111a23; stroke-width: 1.5; }
+    .trend-panel .trend-point.surprise { fill: #a4d87f; }
+    .trend-note { min-height: 22px; color: #81909d; font-size: 9px; }
+    #capture { margin-bottom: 12px; }
+    .forms { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    form { border-radius: 7px; }
+    input, textarea, select { background: #0c151d; border-color: #2b3b48; border-radius: 5px; }
+    button { background: #243f58; border-color: #375d7d; border-radius: 5px; }
+    .notice { background: #172430; }
+    .inspector { min-width: 0; padding: 16px 13px; display: grid; align-content: start; gap: 10px; border-left: 1px solid #26323d; background: #0c131b; }
+    .inspector .panel { padding: 12px; background: #141e28; }
+    .inspector .section-head { align-items: flex-start; margin-bottom: 10px; }
+    .inspector .section-title { font-size: 11px; }
+    .inspector .section-head small { font-size: 8px; text-align: right; max-width: 125px; }
+    .inspector .brain-stat { padding: 7px 0; font-size: 9px; }
+    .inspector .brain-stat strong { font-size: 9px; }
+    .inspector .hint { font-size: 8px; }
+    .inspector .list { max-height: 280px; gap: 6px; }
+    .inspector .row { grid-template-columns: 7px minmax(0, 1fr) auto; gap: 7px; padding: 8px; border-radius: 5px; }
+    .inspector .row-copy strong { font-size: 9px; }
+    .inspector .row-copy span { font-size: 8px; }
+    .inspector .badge { padding: 3px 5px; font-size: 7px; }
+    .inspector .empty { padding: 14px 9px; font-size: 9px; }
+    .inspector .specialist-row { grid-template-columns: minmax(0, 1fr); gap: 4px; padding: 8px; }
+    .inspector .specialist-row strong { font-size: 9px; }
+    .inspector .specialist-row span { font-size: 8px; }
+    footer { font-size: 9px; }
+    @media (max-width: 1100px) {
+      .shell { grid-template-columns: 165px minmax(0, 1fr); }
+      .inspector { grid-column: 2; border-left: 0; border-top: 1px solid #26323d; grid-template-columns: repeat(2, minmax(0,1fr)); }
+      .inspector #activity { grid-column: 1 / -1; }
+      .graph-wrap { height: 330px; }
+    }
+    @media (max-width: 700px) {
+      .topbar { padding: 0 12px; }
+      .topbar-title span { display: none; }
+      .shell { display: flex; flex-direction: column; }
+      .shell > aside:first-child { flex-direction: row; justify-content: space-between; padding: 11px 13px; border-right: 0; border-bottom: 1px solid #26323d; }
+      .brand { padding: 0; }
+      .brand small, nav, .side-note { display: none; }
+      main { padding: 18px 12px; }
+      header { align-items: flex-start; flex-direction: column; }
+      .metrics { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .trend-grid, .forms { grid-template-columns: 1fr; }
+      .graph-wrap { height: 290px; }
+      .inspector { grid-column: auto; padding: 12px; grid-template-columns: 1fr; border-left: 0; }
+      .inspector #activity { grid-column: auto; }
+      footer { flex-direction: column; }
+      .voice-panel .section-head { align-items: flex-start; }
+    }
+  </style>
+</head>
+<body>
+  <div class="topbar">
+    <div class="topbar-title"><strong>elia_ai</strong><span>⌁ &nbsp;Cognitive workspace</span><span>CPU-first · local instance</span></div>
+    <div class="topbar-actions"><span class="live" id="connection">Connecting locally</span></div>
+  </div>
+  <div class="shell">
+    <aside>
+      <div class="brand">
+        <svg class="wordmark" viewBox="0 0 116 32" role="img" aria-labelledby="elia-wordmark-title">
+          <title id="elia-wordmark-title">ELIA</title>
+          <g fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M3 5h20M3 16h20M3 27h20"/>
+            <path d="M34 5v15q0 7 8 7h13"/>
+            <path d="M66 5v22"/>
+            <path d="M78 27 95 5l18 22"/>
+          </g>
+        </svg>
+        <small>LEARN · EVOLVE · ASSIST · TOGETHER</small>
+      </div>
+      <nav aria-label="Main navigation">
+        <a href="#overview">Overview</a><a href="#learning">Learning</a><a href="#activity">Evidence feed</a><a href="#capture">Add experience</a>
+      </nav>
+      <div class="side-note">Local by default.<br>Every predictor points back to evidence.<br><br>CPU-first · No external model required</div>
+    </aside>
+    <main>
+      <header id="overview">
+        <div><h1>Cognitive workspace</h1><p class="subtitle">A live view of ELIA’s architecture, learning records, and tested predictors.</p></div>
+        <p class="subtitle" id="updated-at">Waiting for local API</p>
+      </header>
+      <section class="panel graph-panel" aria-labelledby="map-title">
+        <div class="section-head"><div><h2 class="section-title" id="map-title">ELIA · cognitive space</h2><small>Explore real architecture, TRACE evidence, and stored learning</small></div><div class="graph-controls"><select id="graph-filter" aria-label="Filter graph cloud"><option value="all">All clouds</option><option value="architecture">Architecture</option><option value="specialists">Specialists</option><option value="traces">TRACEs</option><option value="evidence">Evidence</option><option value="episodes">Episodes</option><option value="predictions">Predictions</option><option value="learning">Training</option></select><button type="button" id="graph-zoom-out" aria-label="Zoom out">−</button><button type="button" id="graph-zoom-in" aria-label="Zoom in">+</button><button type="button" id="graph-reset">Reset view</button></div></div>
+        <div class="graph-wrap">
+          <canvas id="cognitive-map" tabindex="0" role="img" aria-label="Interactive three-dimensional view of ELIA's real cognitive architecture and stored learning. Drag to rotate, scroll or pinch to zoom, and select an object to inspect it."></canvas>
+          <div class="graph-detail" id="graph-detail" hidden aria-live="polite"><div class="graph-detail-head"><div><div class="graph-detail-kind" id="graph-detail-kind"></div><strong id="graph-detail-title"></strong></div><button type="button" id="graph-detail-close" aria-label="Close details">×</button></div><div class="graph-detail-copy" id="graph-detail-copy"></div></div>
+          <div class="graph-activity" id="graph-activity" aria-live="polite"></div>
+          <div class="graph-instructions">Drag to rotate · Scroll or pinch to zoom · Click a node to inspect · Double-click to focus</div>
+          <div class="graph-count" id="graph-count">Loading persisted objects…</div>
+        </div>
+        <div class="graph-legend"><span>Core architecture</span><span>Learned specialist</span><span>TRACE / prediction</span><span>Episode / evidence</span></div>
+      </section>
+      <section class="panel voice-panel" aria-labelledby="voice-title">
+        <div class="section-head">
+          <div><h2 class="section-title" id="voice-title">Local voice prototype</h2><small>Vosk speech recognition · Piper speech synthesis</small></div>
+          <button type="button" id="voice-record">Record a question</button>
+        </div>
+        <p class="hint" id="voice-status" aria-live="polite">Checking local voice configuration…</p>
+        <label class="hint" for="voice-question">Transcript or supported question</label>
+        <textarea id="voice-question" rows="2" maxlength="4000" placeholder="Ask a supported question, e.g. “Who helps Bob?”"></textarea>
+        <div class="voice-controls">
+          <button type="button" id="voice-ask">Ask from stored evidence</button>
+          <button class="secondary" type="button" id="voice-speak" disabled>Speak ELIA’s answer</button>
+        </div>
+        <p class="hint" id="voice-answer" aria-live="polite">Audio and transcripts are not saved. This prototype only answers ELIA’s supported, structured question forms; it does not provide open-ended conversation.</p>
+        <audio id="voice-audio" controls hidden></audio>
+      </section>
+      <section class="metrics" aria-label="Measured data">
+        <article class="panel metric"><span class="metric-label">Source episodes</span><strong class="metric-value" id="episodes-count">0</strong><span class="metric-foot">Explicit consent required</span></article>
+        <article class="panel metric"><span class="metric-label">Linked observations</span><strong class="metric-value" id="observations-count">0</strong><span class="metric-foot">Source provenance retained</span></article>
+        <article class="panel metric"><span class="metric-label">Candidate TRACEs</span><strong class="metric-value" id="candidate-count">0</strong><span class="metric-foot">Evidence-backed hypotheses</span></article>
+        <article class="panel metric"><span class="metric-label">Validated predictors</span><strong class="metric-value" id="validated-hero">0</strong><span class="metric-foot">Passed the local test rule</span></article>
+      </section>
+      <section class="trend-grid" aria-label="Measured learning history">
+        <article class="panel trend-panel"><div class="section-head"><h2 class="section-title">Predictor quality</h2><small>Brier loss · lower is better</small></div><svg id="brier-trend" role="img" aria-label="Recorded predictor and baseline Brier scores across evaluation runs"></svg><div class="trend-note" id="brier-note">No evaluation runs recorded yet.</div></article>
+        <article class="panel trend-panel"><div class="section-head"><h2 class="section-title">Learning surprise</h2><small>Pre-update prediction error</small></div><svg id="surprise-trend" role="img" aria-label="Recorded surprise across persisted training examples"></svg><div class="trend-note" id="surprise-note">No verified examples recorded yet.</div></article>
+      </section>
+      <details class="panel" id="capture">
+        <summary>Build a learning record</summary>
+        <div class="forms">
+          <form id="episode-form">
+            <h3>01 · Record consented experience</h3>
+            <input name="title" placeholder="Short title" required maxlength="300">
+            <input name="source_kind" placeholder="Source type (e.g. user_note)" required maxlength="80">
+            <textarea name="content" placeholder="Source text (store only information you choose to share)" required></textarea>
+            <label class="hint"><input name="consented" type="checkbox" required style="width:auto;vertical-align:middle"> I explicitly consent to store this source locally.</label>
+            <button type="submit">Store episode</button>
+          </form>
+          <form id="observation-form">
+            <h3>02 · Link an observation to its source</h3>
+            <select name="episode_id" required><option value="">Choose source episode…</option></select>
+            <textarea name="statement" placeholder="What was explicitly said or observed? Do not state an inference as fact." required></textarea>
+            <button type="submit">Add observation</button>
+          </form>
+          <form id="hypothesis-form">
+            <h3>03 · Propose a testable TRACE</h3>
+            <input name="claim" placeholder="Conditional claim to test" required>
+            <input name="scope" placeholder="Scope, comma separated (e.g. software, support)" required>
+            <input name="conditions" placeholder="Conditions, comma separated (optional)">
+            <input name="expected_outcome" placeholder="Observable outcome predicted" required>
+            <select name="observation_id" required><option value="">Choose evidence observation…</option></select>
+            <select name="stance"><option value="supports">Evidence supports</option><option value="challenges">Evidence challenges</option></select>
+            <button type="submit">Create candidate</button>
+          </form>
+          <form id="prediction-form">
+            <h3>04 · Register before the outcome</h3>
+            <select name="hypothesis_id" required><option value="">Choose candidate/TRACE…</option></select>
+            <input name="context" placeholder="What is the prediction about?" required>
+            <label class="hint">Probability the hypothesis's expected outcome occurs (0–1)<input name="probability" type="number" min="0" max="1" step="0.01" value="0.7" required></label>
+            <button type="submit">Register prediction</button>
+          </form>
+          <form id="outcome-form">
+            <h3>05 · Record a reported outcome</h3>
+            <select name="prediction_id" required><option value="">Choose unresolved prediction…</option></select>
+            <select name="observed"><option value="true">Observed: yes</option><option value="false">Observed: no</option><option value="null">Unknown / not verified</option></select>
+            <input name="verification_source" placeholder="Source reference (required for yes/no)">
+            <p class="hint">ELIA records the reference you provide; it does not independently verify the outcome.</p>
+            <button type="submit">Record outcome</button>
+          </form>
+          <form id="evaluation-form">
+            <h3>06 · Run a reproducible local check</h3>
+            <p class="hint">Score all resolved predictions using Brier loss. Lower is better. A run does not create new evidence.</p>
+            <button type="submit">Evaluate current records</button>
+            <button class="secondary" type="button" id="refresh-button">Refresh from database</button>
+          </form>
+          <form id="cognitive-form">
+            <h3>07 · Train a specialist from explicit source evidence</h3>
+            <select name="observation_id" required><option value="">Choose source-linked observation…</option></select>
+            <input name="specialist_id" placeholder="Specialist ID (e.g. project-support)" required pattern="[a-zA-Z0-9][a-zA-Z0-9._-]{0,79}">
+            <select name="label"><option value="true">Verified outcome: yes</option><option value="false">Verified outcome: no</option></select>
+            <input name="verification_source" placeholder="What evidence verified the label?" required>
+            <label class="hint"><input name="consented" type="checkbox" required style="width:auto;vertical-align:middle"> I consent to use this observation for this specialist's training.</label>
+            <button type="submit">Learn with balanced replay</button>
+            <p class="hint">Training examples are replayed from source-linked records. Deleting a source rebuilds the learned subsystem without those examples.</p>
+          </form>
+          <form id="cognition-predict-form">
+            <h3>08 · Test cognitive routing and prediction</h3>
+            <textarea name="text" placeholder="Enter a transient test input (not stored by prediction)" required></textarea>
+            <select name="specialist_id"><option value="">Let ELIA route automatically (may abstain)…</option></select>
+            <button type="submit">Predict or abstain</button>
+            <p class="hint" id="cognition-result">Predictions here are CPU readouts, not free-form language reasoning.</p>
+          </form>
+          <form id="cognition-counterfactual-form">
+            <h3>08b · Test which source memories matter</h3>
+            <select name="episode_id" required><option value="">Choose a source episode with training examples…</option></select>
+            <textarea name="text" placeholder="Test input (used transiently; not stored)" required></textarea>
+            <select name="specialist_id"><option value="">Let ELIA route automatically (may abstain)…</option></select>
+            <button type="submit">Compare with this source withheld</button>
+            <p class="hint">ELIA rebuilds a separate test learner using all retained source-linked examples except this episode, then compares predictions. The difference measures sensitivity; it does not prove that a source caused the result.</p>
+            <pre class="hint" id="cognition-counterfactual-result">No source-withholding test run yet.</pre>
+          </form>
+          <form id="language-interpret-form">
+            <h3>09 · Review an English interpretation</h3>
+            <textarea name="text" placeholder="Alice likes Bob and helps Cara." required maxlength="4000"></textarea>
+            <button type="submit">Propose facts for review</button>
+            <p class="hint">Pattern-matched proposals only. Review each one and select the exact source observation before saving.</p>
+            <div class="hint" id="language-result" aria-live="polite">No language interpretation run yet.</div>
+            <select name="observation_id"><option value="">Choose the exact source observation…</option></select>
+            <label class="hint"><input name="reviewed" type="checkbox" style="width:auto;vertical-align:middle"> I reviewed the selected facts and want to save them with this source.</label>
+            <button type="button" id="language-save-button" disabled>Save selected reviewed facts</button>
+          </form>
+          <form id="reasoning-fact-form">
+            <h3>10 · Add a source-linked logical fact</h3>
+            <input name="fact" placeholder="parent(alice, bob) or not safe(alice)" required>
+            <select name="observation_id" required><option value="">Choose source observation…</option></select>
+            <button type="submit">Add fact</button>
+          </form>
+          <form id="reasoning-rule-form">
+            <h3>11 · Add a source-linked rule</h3>
+            <textarea name="rule" placeholder="parent(?x, ?y) & parent(?y, ?z) -> grandparent(?x, ?z)" required></textarea>
+            <select name="observation_id" required><option value="">Choose source observation…</option></select>
+            <button type="submit">Add rule</button>
+            <p class="hint">Rules use positive premises, variables beginning with ?, and one conclusion.</p>
+          </form>
+          <form id="reasoning-query-form">
+            <h3>12 · Ask a symbolic question</h3>
+            <input name="query" placeholder="grandparent(alice, ?who)" required>
+            <button type="submit">Reason from facts and rules</button>
+            <pre class="hint" id="reasoning-result">No logical query run yet. This is not natural-language reasoning.</pre>
+          </form>
+          <form id="reasoning-counterfactual-form">
+            <h3>12b · Test which evidence a conclusion depends on</h3>
+            <input name="query" placeholder="ancestor(alice, ?who)" required>
+            <select name="episode_id" required>
+              <option value="">Choose a source episode to withhold…</option>
+            </select>
+            <button type="submit">Compare reasoning without this source</button>
+            <p class="hint">ELIA removes only facts/rules linked to that episode in a temporary reasoning run. Other valid proofs may still support the answer.</p>
+            <pre class="hint" id="reasoning-counterfactual-result">No evidence-withholding test run yet.</pre>
+          </form>
+          <form id="reasoning-resilience-form">
+            <h3>12c · Audit proof resilience across sources</h3>
+            <input name="query" placeholder="ancestor(alice, ?who)" required>
+            <button type="submit">Test every source one at a time</button>
+            <p class="hint">ELIA withholds each source episode in turn and marks which sources are pivotal or redundant for the current supported answers. Limited to 32 source episodes per audit; combinations of sources are not tested.</p>
+            <pre class="hint" id="reasoning-resilience-result">No source-resilience audit run yet.</pre>
+          </form>
+          <form id="reasoning-failure-sets-form">
+            <h3>12d · Find minimal source failure pairs</h3>
+            <input name="query" placeholder="compatible(alice, linux)" required>
+            <input name="evaluation_budget" type="number" min="1" max="529" value="529" required>
+            <button type="submit">Test single sources and pairs</button>
+            <p class="hint">Tests which pairs of source episodes jointly remove a supported answer even though either source alone can be withheld. Evaluates up to 32 episodes (496 pairs), within the evaluation budget. Reports incomplete coverage if stopped early; triples and larger groups are not tested.</p>
+            <pre class="hint" id="reasoning-failure-sets-result">No multi-source failure-set audit run yet.</pre>
+          </form>
+          <form id="language-query-form">
+            <h3>13 · Ask ELIA in simple English</h3>
+            <input name="question" placeholder="Who does Alice help?" maxlength="4000" required>
+            <button type="submit">Answer from stored evidence</button>
+            <p class="hint">Try “Who helps Bob?”, “Who does Alice help?”, “Does Alice help Bob?”, or “Why does Alice help Bob?” Answers use stored facts and rules, include proofs, and may be unknown or conflicting. A “yes” to a who/what question means at least one witness is supported. “Why” returns an evidence trail, not a real-world cause.</p>
+            <pre class="hint" id="language-query-result">No English question run yet.</pre>
+          </form>
+        </div>
+      </details>
+      <footer><span>ELIA · TRACE research prototype · v0.1.0</span><span>Local intelligence. Evidence before claims.</span></footer>
+    </main>
+    <aside class="inspector" aria-label="Live system inspector">
+      <article class="panel score">
+        <div class="section-head"><h2 class="section-title">Predictive evidence</h2><small>Source-referenced outcomes</small></div>
+        <div class="score-line"><span>Evaluated</span><strong id="evaluated-count">0</strong></div>
+        <div class="bar"><i id="coverage-bar"></i></div>
+        <div class="score-line"><span>Unknown / unscored</span><strong id="unknown-count">0</strong></div>
+        <p class="hint">Validation requires 10 resolved cases and better Brier loss than the registration-time baseline. This is a test result, not a guarantee.</p>
+      </article>
+      <article class="panel">
+        <div class="section-head"><h2 class="section-title">ELIA’s next thought</h2><small>Evidence rules · propose only</small></div>
+        <strong id="thought-title">No deliberation recorded yet.</strong>
+        <p class="hint" id="thought-rationale">ELIA can inspect stored evidence and suggest one next research step. It will not carry it out.</p>
+        <p class="hint" id="thought-step"></p>
+        <button type="button" id="think-run">Think about the evidence</button>
+      </article>
+      <article class="panel">
+        <div class="section-head"><h2 class="section-title">Self-evaluation cycle</h2><small>CPU · evidence only</small></div>
+        <div id="sleep-summary" class="hint">No self-evaluation cycle has run yet.</div>
+        <button type="button" id="sleep-run">Run self-evaluation now</button>
+        <p class="hint">Re-scores recorded outcomes, checks evidence conflicts, and logs the result. It does not train on raw conversations or make itself more capable automatically.</p>
+      </article>
+      <article class="panel">
+        <div class="section-head"><h2 class="section-title">Shared cognitive core</h2><small>Current local state</small></div>
+        <div class="brain-stat"><span>Sparse units</span><strong id="brain-neurons">10,000</strong></div>
+        <div class="brain-stat"><span>Synapses / capacity</span><strong id="brain-synapses">0 / 160,000</strong></div>
+        <div class="brain-stat"><span>Shared parameters</span><strong id="brain-parameters">0</strong></div>
+        <div class="brain-stat"><span>Replay / stored examples</span><strong id="brain-replay">0 / 0</strong></div>
+        <p class="hint">Sparse hashed feature associations; counts are implementation state, not an intelligence score.</p>
+      </article>
+      <article class="panel">
+        <div class="section-head"><h2 class="section-title">Specialist circuits</h2><small id="router-summary">Waiting for learning</small></div>
+        <div class="list" id="specialist-list"><div class="empty">No specialist circuits yet. Add a verified, source-linked training example below.</div></div>
+        <p class="hint">The router abstains on ambiguous or novel input.</p>
+      </article>
+      <article class="panel" id="learning">
+        <div class="section-head"><h2 class="section-title">Recent TRACEs</h2><small>Evidence and state</small></div>
+        <div class="list" id="hypotheses-list"><div class="empty">No hypotheses yet. Add a source-linked observation to begin.</div></div>
+      </article>
+      <article class="panel" id="memory">
+        <div class="section-head"><h2 class="section-title">Memory compression</h2><small id="memory-meta">Compression status</small></div>
+        <div class="memory-box">
+          <div class="memory-stat">
+            <strong id="memory-strategy">No compression report yet</strong>
+            <span id="memory-detail">ELIA has not compacted the evidence set yet. Run a compression pass to collapse duplicate evidence into canonical fragments.</span>
+          </div>
+          <p class="hint">The retention gate measures in-sample normalized memory-key coverage. It is not a held-out task test or proof that compressed memory preserves real-world performance.</p>
+          <div class="memory-actions">
+            <label>
+              Max fragments
+              <input id="memory-max-fragments" type="number" min="1" max="64" step="1" value="8">
+            </label>
+            <button id="compress-memory" type="button">Compress now</button>
+          </div>
+        </div>
+      </article>
+      <article class="panel" id="activity">
+        <div class="section-head"><h2 class="section-title">Recent activity</h2><small id="activity-updated">Local event feed</small></div>
+        <div class="list" id="activity-list"><div class="empty">Connecting to your local ELIA instance…</div></div>
+      </article>
+    </aside>
+  </div>
+  <div class="notice" id="notice" role="status"></div>
+  <script>
+    const api = "/api/v1";
+    const byId = (id) => document.getElementById(id);
+    let noticeTimer;
+    let pendingLanguageProposals = [];
+    let pendingLanguageText = "";
+
+    function notify(message, error = false) {
+      const box = byId("notice");
+      box.textContent = message;
+      box.className = `notice${error ? " error" : ""}`;
+      box.style.display = "block";
+      clearTimeout(noticeTimer);
+      noticeTimer = setTimeout(() => { box.style.display = "none"; }, 4500);
+    }
+
+    async function request(path, options = {}) {
+      const headers = { ...(options.headers || {}) };
+      const wantsJson = options.body !== undefined || ["POST", "PUT", "PATCH"].includes((options.method || "GET").toUpperCase());
+      if (wantsJson && !Object.keys(headers).some((key) => key.toLowerCase() === "content-type")) {
+        headers["Content-Type"] = "application/json";
+      }
+      const response = await fetch(api + path, { ...options, headers });
+      const raw = await response.text();
+      let body = {};
+      if (raw) {
+        try {
+          body = JSON.parse(raw);
+        } catch {
+          body = { error: raw };
+        }
+      }
+      if (!response.ok) {
+        const message = body && typeof body === "object" && body.error ? body.error : `Request failed (${response.status})`;
+        throw new Error(message);
+      }
+      return body;
+    }
+
+    let voiceCapture = null;
+    let lastVoiceAnswer = "";
+    let voiceAudioUrl = "";
+
+    function pcmWav(samples, sourceRate) {
+      const ratio = sourceRate / 16000;
+      const outputLength = Math.floor(samples.length / ratio);
+      if (!outputLength) throw new Error("No microphone audio was captured.");
+      const pcm = new ArrayBuffer(44 + outputLength * 2);
+      const view = new DataView(pcm);
+      const writeText = (offset, text) => {
+        for (let i = 0; i < text.length; i += 1) view.setUint8(offset + i, text.charCodeAt(i));
+      };
+      writeText(0, "RIFF");
+      view.setUint32(4, 36 + outputLength * 2, true);
+      writeText(8, "WAVE");
+      writeText(12, "fmt ");
+      view.setUint32(16, 16, true);
+      view.setUint16(20, 1, true);
+      view.setUint16(22, 1, true);
+      view.setUint32(24, 16000, true);
+      view.setUint32(28, 32000, true);
+      view.setUint16(32, 2, true);
+      view.setUint16(34, 16, true);
+      writeText(36, "data");
+      view.setUint32(40, outputLength * 2, true);
+      for (let i = 0; i < outputLength; i += 1) {
+        const position = i * ratio;
+        const left = Math.floor(position);
+        const fraction = position - left;
+        const sample = samples[left] * (1 - fraction) + (samples[Math.min(left + 1, samples.length - 1)] || 0) * fraction;
+        const clipped = Math.max(-1, Math.min(1, sample));
+        view.setInt16(44 + i * 2, clipped < 0 ? clipped * 32768 : clipped * 32767, true);
+      }
+      return new Blob([pcm], { type: "audio/wav" });
+    }
+
+    async function stopVoiceRecording() {
+      const capture = voiceCapture;
+      if (!capture) return;
+      voiceCapture = null;
+      byId("voice-record").disabled = true;
+      byId("voice-record").textContent = "Transcribing…";
+      byId("voice-ask").disabled = true;
+      byId("voice-speak").disabled = true;
+      lastVoiceAnswer = "";
+      capture.processor.disconnect();
+      capture.source.disconnect();
+      capture.silence.disconnect();
+      capture.stream.getTracks().forEach((track) => track.stop());
+      await capture.context.close();
+      try {
+        const samples = new Float32Array(Math.min(capture.length, Math.floor(capture.context.sampleRate * 30)));
+        let offset = 0;
+        for (const chunk of capture.chunks) {
+          if (offset >= samples.length) break;
+          const count = Math.min(chunk.length, samples.length - offset);
+          samples.set(chunk.subarray(0, count), offset);
+          offset += count;
+        }
+        const audio = pcmWav(samples, capture.context.sampleRate);
+        const response = await fetch(`${api}/voice/transcribe`, {
+          method: "POST",
+          headers: { "Content-Type": "audio/wav" },
+          body: audio
+        });
+        const result = await response.json();
+        if (!response.ok) throw new Error(result.error || `Transcription failed (${response.status})`);
+        byId("voice-question").value = result.text;
+        byId("voice-answer").textContent = result.text
+          ? "Transcript ready. Review or edit it, then choose “Ask from stored evidence”."
+          : "No speech was recognized. Try again or enter a question.";
+        byId("voice-ask").disabled = !result.text;
+      } catch (error) {
+        byId("voice-answer").textContent = error.message;
+        notify(error.message, true);
+      } finally {
+        byId("voice-record").disabled = false;
+        byId("voice-record").textContent = "Record a question";
+        byId("voice-ask").disabled = !byId("voice-question").value.trim();
+      }
+    }
+
+    async function startVoiceRecording() {
+      if (!navigator.mediaDevices?.getUserMedia || !window.AudioContext) {
+        throw new Error("Microphone recording requires a supported browser on localhost or HTTPS.");
+      }
+      const stream = await navigator.mediaDevices.getUserMedia({
+        audio: { channelCount: 1, echoCancellation: true, noiseSuppression: true },
+        video: false
+      });
+      try {
+        const context = new AudioContext();
+        const source = context.createMediaStreamSource(stream);
+        const processor = context.createScriptProcessor(4096, 1, 1);
+        const silence = context.createGain();
+        silence.gain.value = 0;
+        const capture = { context, stream, source, processor, silence, chunks: [], length: 0 };
+        voiceCapture = capture;
+        processor.onaudioprocess = (event) => {
+          if (voiceCapture !== capture) return;
+          const chunk = new Float32Array(event.inputBuffer.getChannelData(0));
+          capture.chunks.push(chunk);
+          capture.length += chunk.length;
+          if (capture.length >= context.sampleRate * 30) void stopVoiceRecording();
+        };
+        source.connect(processor);
+        processor.connect(silence);
+        silence.connect(context.destination);
+        byId("voice-record").textContent = "Stop recording";
+        byId("voice-answer").textContent = "Recording locally… Maximum 30 seconds.";
+      } catch (error) {
+        stream.getTracks().forEach((track) => track.stop());
+        throw error;
+      }
+    }
+
+    byId("voice-record").addEventListener("click", async () => {
+      if (voiceCapture) {
+        await stopVoiceRecording();
+        return;
+      }
+      try {
+        await startVoiceRecording();
+      } catch (error) {
+        byId("voice-answer").textContent = error.message;
+        notify(error.message, true);
+      }
+    });
+
+    byId("voice-question").addEventListener("input", (event) => {
+      byId("voice-ask").disabled = !event.currentTarget.value.trim();
+      byId("voice-speak").disabled = true;
+      lastVoiceAnswer = "";
+    });
+
+    byId("voice-ask").addEventListener("click", async () => {
+      const button = byId("voice-ask");
+      const question = byId("voice-question").value.trim();
+      if (!question) return;
+      button.disabled = true;
+      byId("voice-speak").disabled = true;
+      byId("voice-answer").textContent = "Querying only the evidence ELIA already stores…";
+      try {
+        const result = await request("/language/query", {
+          method: "POST",
+          body: JSON.stringify({ question })
+        });
+        const answer = result.answer === "yes" && result.template.startsWith("wh_")
+          ? `Supported answer(s): ${JSON.stringify(result.reasoning.answers.filter((row) => row.state === "supported").map((row) => row.bindings))}`
+          : result.answer === "yes"
+            ? "ELIA’s stored facts support this statement."
+            : result.answer === "no"
+              ? "ELIA’s stored facts explicitly refute this statement."
+              : result.answer === "evidence_found"
+                ? "ELIA found a stored evidence trace for this statement."
+                : result.answer === "claim_refuted"
+                  ? "ELIA’s stored facts explicitly refute this statement."
+                  : result.answer === "conflict"
+                    ? "ELIA found conflicting support and challenge in its stored evidence."
+                    : result.answer === "mixed"
+                      ? "ELIA found mixed results across the requested evidence."
+                      : result.answer === "unknown"
+                        ? "ELIA does not know from its stored evidence."
+                        : `ELIA returned: ${result.answer}`;
+        lastVoiceAnswer = answer;
+        byId("voice-answer").textContent = `${answer}\n\nEvidence-based result only; it does not establish that source observations are true.`;
+        byId("voice-speak").disabled = false;
+      } catch (error) {
+        byId("voice-answer").textContent = error.message;
+        notify(error.message, true);
+      } finally {
+        button.disabled = !question;
+      }
+    });
+
+    byId("voice-speak").addEventListener("click", async () => {
+      const button = byId("voice-speak");
+      if (!lastVoiceAnswer) return;
+      button.disabled = true;
+      try {
+        const response = await fetch(`${api}/voice/synthesize`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ text: lastVoiceAnswer })
+        });
+        if (!response.ok) {
+          const result = await response.json();
+          throw new Error(result.error || `Speech synthesis failed (${response.status})`);
+        }
+        if (voiceAudioUrl) URL.revokeObjectURL(voiceAudioUrl);
+        voiceAudioUrl = URL.createObjectURL(await response.blob());
+        const audio = byId("voice-audio");
+        audio.src = voiceAudioUrl;
+        audio.hidden = false;
+        await audio.play();
+      } catch (error) {
+        byId("voice-answer").textContent += `\n\nSpeech synthesis unavailable: ${error.message}`;
+        notify(error.message, true);
+      } finally {
+        button.disabled = false;
+      }
+    });
+
+    request("/voice/status").then((status) => {
+      const asr = status.speech_to_text;
+      const ready = asr.configured && asr.model_available && asr.dependency_available;
+      byId("voice-status").textContent = ready
+        ? "Local speech recognition model is configured. Microphone audio is sent only to this ELIA server."
+        : "Voice engines are optional and local-only. Configure a Vosk model and Piper service to enable recording and speech.";
+    }).catch((error) => {
+      byId("voice-status").textContent = `Could not read voice status: ${error.message}`;
+    });
+
+    function option(select, value, label) {
+      const item = document.createElement("option");
+      item.value = value;
+      item.textContent = label;
+      select.append(item);
+    }
+
+    function fillSelect(formId, name, rows, empty, labeler) {
+      const select = document.querySelector(`#${formId} [name="${name}"]`);
+      const previous = select.value;
+      select.replaceChildren();
+      option(select, "", empty);
+      for (const row of rows) option(select, row.id, labeler(row));
+      if ([...select.options].some((item) => item.value === previous)) select.value = previous;
+    }
+
+    const graphCanvas = byId("cognitive-map");
+    const graphContext = graphCanvas.getContext("2d");
+    const graphState = {
+      nodes: [], edges: [], rotationX: -0.22, rotationY: 0.32, zoom: 1,
+      focus: { x: 0, y: 0, z: 0 }, selected: null, hovered: null,
+      width: 0, height: 0, pixelRatio: 1, pointers: new Map(), dragMoved: false,
+      lastPointer: null, animationTime: 0, lastFrameTime: null,
+      hasGraphSnapshot: false, previousNodeIds: new Set(), previousEdgeIds: new Set(),
+      nodeBirthTimes: new Map(), edgeBirthTimes: new Map(), activityTimer: null
+    };
+    const graphMotionPreference = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const graphGroups = {
+      architecture: { label: "SHARED CORE", center: [0, 0, 0], color: "#a9cfff" },
+      specialists: { label: "SPECIALISTS", center: [2.45, 0, 0], color: "#71b8d7" },
+      traces: { label: "TRACES", center: [-2.4, 0, 0], color: "#9fe0a5" },
+      evidence: { label: "OBSERVATIONS", center: [-1.45, -1.85, 0], color: "#e5b67f" },
+      episodes: { label: "EPISODES", center: [-2.05, 1.85, 0], color: "#e5b67f" },
+      predictions: { label: "PREDICTIONS", center: [0.65, 1.95, 0], color: "#9fe0a5" },
+      learning: { label: "COGNITIVE LEARNING", center: [2.2, -1.8, 0], color: "#71b8d7" }
+    };
+
+    function stableHash(value) {
+      let hash = 2166136261;
+      for (const character of String(value)) {
+        hash ^= character.charCodeAt(0);
+        hash = Math.imul(hash, 16777619);
+      }
+      return hash >>> 0;
+    }
+
+    function addGraphNode(id, group, title, detail, record) {
+      const seed = stableHash(id);
+      const fraction = seed / 4294967296;
+      const angle = fraction * Math.PI * 2;
+      const vertical = (stableHash(`${id}:vertical`) / 2147483648) - 1;
+      const radial = Math.sqrt(Math.max(0, 1 - vertical * vertical));
+      const spread = 0.25 + Math.cbrt(fraction) * 0.9;
+      const center = graphGroups[group].center;
+      const node = {
+        id, group, title, detail, record,
+        x: center[0] + Math.cos(angle) * radial * spread,
+        y: center[1] + vertical * spread,
+        z: center[2] + Math.sin(angle) * radial * spread
+      };
+      graphState.nodes.push(node);
+      return node;
+    }
+
+    function addGraphEdge(from, to, kind = "link") {
+      if (from && to && from !== to) graphState.edges.push({ from, to, kind });
+    }
+
+    function graphEdgeId(edge) {
+      return `${edge.from}\u0000${edge.to}\u0000${edge.kind}`;
+    }
+
+    function showGraphActivity(count) {
+      const indicator = byId("graph-activity");
+      indicator.textContent = `+${count} new record${count === 1 ? "" : "s"} · live data`;
+      indicator.classList.add("active");
+      clearTimeout(graphState.activityTimer);
+      graphState.activityTimer = setTimeout(() => indicator.classList.remove("active"), 3600);
+    }
+
+    function buildCognitiveMap(dashboard, episodes, observations, predictions, evaluations, experiences) {
+      graphState.nodes = [];
+      graphState.edges = [];
+      const architecture = [
+        ["shared", "Shared cognitive core", "Sparse feature readout · CPU"],
+        ["substrate", "Sparse substrate", "Bounded adaptive associations"],
+        ["router", "Specialist router", "Routes or abstains on uncertainty"],
+        ["replay", "Balanced replay", `${dashboard.cognition.replay_size} retained replay examples`]
+      ];
+      for (const [id, title, detail] of architecture) {
+        addGraphNode(`module:${id}`, "architecture", title, detail, { module: id, status: "implemented" });
+      }
+      for (const [from, to] of [
+        ["module:shared", "module:substrate"], ["module:substrate", "module:router"],
+        ["module:router", "module:replay"], ["module:replay", "module:shared"],
+        ["module:shared", "module:router"], ["module:substrate", "module:replay"]
+      ]) addGraphEdge(from, to, "architecture");
+
+      const specialistIds = new Map();
+      for (const specialist of dashboard.cognition.specialists) {
+        const node = addGraphNode(
+          `specialist:${specialist.id}`, "specialists", specialist.id,
+          `${specialist.updates} persisted updates · ${specialist.parameter_count} active weights`,
+          specialist
+        );
+        specialistIds.set(specialist.id, node.id);
+        addGraphEdge("module:router", node.id, "routing");
+        addGraphEdge("module:shared", node.id, "shared weights");
+      }
+
+      const episodeIds = new Set();
+      for (const episode of episodes.episodes) {
+        const id = `episode:${episode.id}`;
+        episodeIds.add(episode.id);
+        addGraphNode(id, "episodes", episode.title, {
+          "Source type": episode.source_kind,
+          "Created": episode.created_at,
+          "Record ID": episode.id
+        }, episode);
+      }
+
+      const observationIds = new Map();
+      for (const observation of observations.observations) {
+        const id = `observation:${observation.id}`;
+        observationIds.set(observation.id, id);
+        addGraphNode(id, "evidence", observation.statement, {
+          "Source episode": observation.episode_title,
+          "Evidence range": `${observation.evidence_start ?? "not specified"} – ${observation.evidence_end ?? "not specified"}`,
+          "Created": observation.created_at,
+          "Record ID": observation.id
+        }, observation);
+        if (episodeIds.has(observation.episode_id)) addGraphEdge(id, `episode:${observation.episode_id}`, "derived from");
+      }
+
+      const traceIds = new Set();
+      for (const trace of dashboard.hypotheses) {
+        const id = `trace:${trace.id}`;
+        traceIds.add(trace.id);
+        addGraphNode(id, "traces", trace.claim, {
+          "State": trace.status,
+          "Scope": (trace.scope || []).join(", ") || "Not specified",
+          "Evidence records": (trace.evidence || []).length,
+          "Expected outcome": trace.expected_outcome,
+          "Conditions": (trace.conditions || []).join(", ") || "None recorded",
+          "Record ID": trace.id
+        }, trace);
+        for (const evidence of trace.evidence || []) {
+          const observationId = observationIds.get(evidence.observation_id);
+          addGraphEdge(id, observationId, evidence.stance || "supported by");
+        }
+      }
+
+      for (const prediction of predictions.predictions) {
+        const id = `prediction:${prediction.id}`;
+        addGraphNode(id, "predictions", prediction.context, {
+          "Claim": prediction.claim,
+          "Probability": prediction.probability,
+          "Baseline probability": prediction.baseline_probability,
+          "Outcome": prediction.observed === null ? "Unresolved" : String(prediction.observed),
+          "Verification source": prediction.verification_source || "Not yet recorded",
+          "Created": prediction.created_at,
+          "Record ID": prediction.id
+        }, prediction);
+        if (traceIds.has(prediction.hypothesis_id)) addGraphEdge(id, `trace:${prediction.hypothesis_id}`, "tests");
+      }
+
+      for (const experience of experiences.experiences) {
+        const id = `learning:${experience.id}`;
+        addGraphNode(id, "learning", experience.specialist_id, {
+          "Label": experience.label ? "positive" : "negative",
+          "Pre-update probability": experience.pre_update_probability,
+          "Surprise": experience.surprise,
+          "Replay updates": experience.replay_updates,
+          "Verification source": experience.verification_source,
+          "Created": experience.created_at,
+          "Record ID": experience.id
+        }, experience);
+        addGraphEdge("module:replay", id, "replayed");
+        const specialistNode = specialistIds.get(experience.specialist_id);
+        if (specialistNode) addGraphEdge(id, specialistNode, "trains");
+        if (observationIds.has(experience.observation_id)) {
+          addGraphEdge(id, observationIds.get(experience.observation_id), "grounded in");
+        }
+        if (episodeIds.has(experience.episode_id)) addGraphEdge(id, `episode:${experience.episode_id}`, "source");
+      }
+
+      for (const evaluation of evaluations.evaluations) {
+        if (!evaluation.hypothesis_id || !traceIds.has(evaluation.hypothesis_id)) continue;
+        const id = `evaluation:${evaluation.id}`;
+        addGraphNode(id, "predictions", "Evaluation run", {
+          "TRACE": evaluation.claim || evaluation.hypothesis_id,
+          "Sample size": evaluation.sample_size,
+          "Predictor Brier score": evaluation.predictor_brier,
+          "Baseline Brier score": evaluation.baseline_brier,
+          "Created": evaluation.created_at
+        }, evaluation);
+        addGraphEdge(id, `trace:${evaluation.hypothesis_id}`, "evaluates");
+      }
+
+      const currentNodeIds = new Set(graphState.nodes.map((node) => node.id));
+      const currentEdgeIds = new Set(graphState.edges.map(graphEdgeId));
+      let newNodeCount = 0;
+      if (graphState.hasGraphSnapshot) {
+        for (const id of currentNodeIds) {
+          if (!graphState.previousNodeIds.has(id)) {
+            graphState.nodeBirthTimes.set(id, graphState.animationTime);
+            newNodeCount++;
+          }
+        }
+        for (const id of currentEdgeIds) {
+          if (!graphState.previousEdgeIds.has(id)) {
+            graphState.edgeBirthTimes.set(id, graphState.animationTime);
+          }
+        }
+      }
+      for (const id of graphState.nodeBirthTimes.keys()) {
+        if (!currentNodeIds.has(id)) graphState.nodeBirthTimes.delete(id);
+      }
+      for (const id of graphState.edgeBirthTimes.keys()) {
+        if (!currentEdgeIds.has(id)) graphState.edgeBirthTimes.delete(id);
+      }
+      graphState.previousNodeIds = currentNodeIds;
+      graphState.previousEdgeIds = currentEdgeIds;
+      graphState.hasGraphSnapshot = true;
+      if (newNodeCount) showGraphActivity(newNodeCount);
+      drawCognitiveMap();
+    }
+
+    function rotatePoint(x, y, z) {
+      x -= graphState.focus.x;
+      y -= graphState.focus.y;
+      z -= graphState.focus.z;
+      const cosY = Math.cos(graphState.rotationY);
+      const sinY = Math.sin(graphState.rotationY);
+      const turnedX = x * cosY - z * sinY;
+      const turnedZ = x * sinY + z * cosY;
+      const cosX = Math.cos(graphState.rotationX);
+      const sinX = Math.sin(graphState.rotationX);
+      return { x: turnedX, y: y * cosX - turnedZ * sinX, z: y * sinX + turnedZ * cosX };
+    }
+
+    function projectPoint(point) {
+      const rotated = rotatePoint(point.x, point.y, point.z);
+      const baseScale = Math.min(graphState.width / 7.6, graphState.height / 5.5) * graphState.zoom;
+      const perspective = 7 / (7 + rotated.z);
+      return {
+        x: graphState.width / 2 + rotated.x * baseScale * perspective,
+        y: graphState.height / 2 - rotated.y * baseScale * perspective,
+        z: rotated.z,
+        radius: Math.max(1.4, Math.min(7, 3.1 * perspective * Math.sqrt(graphState.zoom)))
+      };
+    }
+
+    function visibleGraphNodes() {
+      const filter = byId("graph-filter").value;
+      return graphState.nodes.filter((node) => filter === "all" || node.group === filter);
+    }
+
+    function drawCloud(group, nodes, time) {
+      if (!nodes.length) return;
+      const center = graphGroups[group].center;
+      const baseRadius = Math.min(1.45, 0.92 + Math.sqrt(nodes.length) * 0.035);
+      const radius = baseRadius * (1 + Math.sin(time * 0.72 + stableHash(group) % 13) * 0.012);
+      const color = graphGroups[group].color;
+      graphContext.save();
+      graphContext.strokeStyle = color;
+      graphContext.globalAlpha = 0.17;
+      graphContext.lineWidth = 0.7;
+      for (let plane = 0; plane < 3; plane++) {
+        graphContext.beginPath();
+        for (let index = 0; index <= 48; index++) {
+          const angle = index * Math.PI * 2 / 48;
+          const point = plane === 0
+            ? { x: center[0] + Math.cos(angle) * radius, y: center[1] + Math.sin(angle) * radius, z: center[2] }
+            : plane === 1
+              ? { x: center[0] + Math.cos(angle) * radius, y: center[1], z: center[2] + Math.sin(angle) * radius }
+              : { x: center[0], y: center[1] + Math.cos(angle) * radius, z: center[2] + Math.sin(angle) * radius };
+          const projected = projectPoint(point);
+          if (index === 0) graphContext.moveTo(projected.x, projected.y);
+          else graphContext.lineTo(projected.x, projected.y);
+        }
+        graphContext.stroke();
+      }
+      const labelPosition = projectPoint({ x: center[0], y: center[1] + radius + 0.12, z: center[2] });
+      graphContext.globalAlpha = 0.68;
+      graphContext.fillStyle = color;
+      graphContext.font = "9px Segoe UI, sans-serif";
+      graphContext.textAlign = "center";
+      graphContext.fillText(graphGroups[group].label, labelPosition.x, labelPosition.y);
+      graphContext.restore();
+    }
+
+    function drawCognitiveMap(time = graphState.animationTime) {
+      if (!graphContext || !graphState.width || !graphState.height) return;
+      const { width, height } = graphState;
+      graphContext.clearRect(0, 0, width, height);
+      const visible = visibleGraphNodes();
+      const visibleIds = new Set(visible.map((node) => node.id));
+      const projected = new Map(visible.map((node) => [node.id, projectPoint(node)]));
+      for (const group of Object.keys(graphGroups)) {
+        drawCloud(group, visible.filter((node) => node.group === group), time);
+      }
+      graphContext.save();
+      graphContext.lineWidth = 0.85;
+      for (const edge of graphState.edges) {
+        if (!visibleIds.has(edge.from) || !visibleIds.has(edge.to)) continue;
+        const a = projected.get(edge.from);
+        const b = projected.get(edge.to);
+        if (a.z < -5 || b.z < -5) continue;
+        graphContext.beginPath();
+        graphContext.moveTo(a.x, a.y);
+        graphContext.lineTo(b.x, b.y);
+        graphContext.strokeStyle = edge.kind === "architecture" ? "#7592ad" : "#456b78";
+        graphContext.globalAlpha = edge.kind === "architecture" ? 0.55 : 0.32;
+        graphContext.stroke();
+        const edgeAge = graphState.edgeBirthTimes.has(graphEdgeId(edge))
+          ? time - graphState.edgeBirthTimes.get(graphEdgeId(edge))
+          : Infinity;
+        if (edgeAge >= 0 && edgeAge < 1.35 && !graphMotionPreference.matches) {
+          const progress = 1 - Math.pow(1 - edgeAge / 1.35, 3);
+          graphContext.beginPath();
+          graphContext.moveTo(a.x, a.y);
+          graphContext.lineTo(a.x + (b.x - a.x) * progress, a.y + (b.y - a.y) * progress);
+          graphContext.strokeStyle = "#b6f0d1";
+          graphContext.globalAlpha = (1 - progress) * 0.9;
+          graphContext.lineWidth = 1.7;
+          graphContext.shadowColor = "#8af0bb";
+          graphContext.shadowBlur = 9;
+          graphContext.stroke();
+          graphContext.shadowBlur = 0;
+        }
+        const phase = (time * (edge.kind === "architecture" ? 0.19 : 0.13) + stableHash(`${edge.from}:${edge.to}`) % 100 / 100) % 1;
+        const pulseX = a.x + (b.x - a.x) * phase;
+        const pulseY = a.y + (b.y - a.y) * phase;
+        graphContext.beginPath();
+        graphContext.arc(pulseX, pulseY, edge.kind === "architecture" ? 1.9 : 1.35, 0, Math.PI * 2);
+        graphContext.fillStyle = edge.kind === "architecture" ? "#b7d7ff" : "#86d5c5";
+        graphContext.globalAlpha = 0.78;
+        graphContext.shadowColor = graphContext.fillStyle;
+        graphContext.shadowBlur = 7;
+        graphContext.fill();
+        graphContext.shadowBlur = 0;
+      }
+      const drawOrder = visible.slice().sort((a, b) => projected.get(a.id).z - projected.get(b.id).z);
+      for (const node of drawOrder) {
+        const point = projected.get(node.id);
+        if (point.z < -6) continue;
+        const selected = graphState.selected === node.id;
+        const hovered = graphState.hovered === node.id;
+        const color = graphGroups[node.group].color;
+        const pulse = 1 + Math.sin(time * 1.15 + stableHash(node.id) % 31) * 0.1;
+        const nodeAge = graphState.nodeBirthTimes.has(node.id)
+          ? time - graphState.nodeBirthTimes.get(node.id)
+          : Infinity;
+        const isEntering = nodeAge >= 0 && nodeAge < 2.2 && !graphMotionPreference.matches;
+        const radius = (selected || hovered ? point.radius + 2.4 : point.radius) * pulse *
+          (isEntering ? 1 + (1 - nodeAge / 2.2) * 0.45 : 1);
+        graphContext.beginPath();
+        graphContext.arc(point.x, point.y, radius, 0, Math.PI * 2);
+        graphContext.fillStyle = color;
+        graphContext.globalAlpha = selected || hovered ? 1 : Math.max(0.48, Math.min(0.9, 0.92 - point.z * 0.035));
+        graphContext.shadowColor = color;
+        graphContext.shadowBlur = selected || hovered ? 14 : 7;
+        graphContext.fill();
+        graphContext.shadowBlur = 0;
+        if (isEntering) {
+          graphContext.beginPath();
+          graphContext.arc(point.x, point.y, radius + 7 + nodeAge * 7, 0, Math.PI * 2);
+          graphContext.strokeStyle = color;
+          graphContext.globalAlpha = 1 - nodeAge / 2.2;
+          graphContext.lineWidth = 1.2;
+          graphContext.stroke();
+        }
+        if (selected) {
+          graphContext.beginPath();
+          graphContext.arc(point.x, point.y, radius + 4, 0, Math.PI * 2);
+          graphContext.strokeStyle = "#e6f4ff";
+          graphContext.globalAlpha = 0.9;
+          graphContext.lineWidth = 1;
+          graphContext.stroke();
+        }
+        const labelIndex = drawOrder.findIndex((candidate) => candidate.id === node.id);
+        const showLabel = node.group === "architecture" || selected || hovered ||
+          (graphState.zoom > 1.45 && labelIndex % Math.max(1, Math.ceil(drawOrder.length / 22)) === 0);
+        if (showLabel) {
+          const text = node.title.length > 34 ? `${node.title.slice(0, 32)}…` : node.title;
+          graphContext.globalAlpha = selected || hovered ? 1 : 0.86;
+          graphContext.fillStyle = "#dce9f3";
+          graphContext.font = `${selected || hovered ? "10px" : "8px"} Segoe UI, sans-serif`;
+          graphContext.textAlign = "center";
+          graphContext.shadowColor = "#071019";
+          graphContext.shadowBlur = 4;
+          graphContext.fillText(text, point.x, point.y - radius - 5);
+          graphContext.shadowBlur = 0;
+        }
+      }
+      graphContext.restore();
+      const counts = Object.values(graphGroups).map((group) => {
+        const count = visible.filter((node) => graphGroups[node.group] === group).length;
+        return count ? `${count} ${group.label.toLowerCase()}` : null;
+      }).filter(Boolean);
+      byId("graph-count").textContent = `${visible.length} loaded objects (latest up to 100 per feed) · ${graphState.edges.filter((edge) => visibleIds.has(edge.from) && visibleIds.has(edge.to)).length} links${counts.length ? ` · ${counts.join(" · ")}` : ""}`;
+      graphCanvas.setAttribute("aria-label",
+        `Interactive 3D cognitive graph with ${visible.length} visible objects and ${graphState.edges.filter((edge) => visibleIds.has(edge.from) && visibleIds.has(edge.to)).length} connections. Drag to rotate, scroll or pinch to zoom, click a node to inspect.`);
+    }
+
+    function animateCognitiveMap(timestamp) {
+      if (graphState.lastFrameTime !== null) {
+        const elapsed = Math.min((timestamp - graphState.lastFrameTime) / 1000, 0.05);
+        graphState.animationTime += elapsed;
+        if (!graphState.pointers.size && !document.hidden && !graphMotionPreference.matches) {
+          graphState.rotationY += elapsed * 0.055;
+        }
+      }
+      graphState.lastFrameTime = timestamp;
+      drawCognitiveMap();
+      if (!graphMotionPreference.matches && !document.hidden) {
+        requestAnimationFrame(animateCognitiveMap);
+      } else {
+        graphState.lastFrameTime = null;
+      }
+    }
+
+    function resizeCognitiveMap() {
+      const bounds = graphCanvas.getBoundingClientRect();
+      if (!bounds.width || !bounds.height) return;
+      graphState.pixelRatio = Math.min(window.devicePixelRatio || 1, 2);
+      graphState.width = bounds.width;
+      graphState.height = bounds.height;
+      graphCanvas.width = Math.round(bounds.width * graphState.pixelRatio);
+      graphCanvas.height = Math.round(bounds.height * graphState.pixelRatio);
+      graphContext.setTransform(graphState.pixelRatio, 0, 0, graphState.pixelRatio, 0, 0);
+      drawCognitiveMap();
+    }
+
+    function showGraphDetails(node) {
+      graphState.selected = node ? node.id : null;
+      const card = byId("graph-detail");
+      if (!node) {
+        card.hidden = true;
+        drawCognitiveMap();
+        return;
+      }
+      byId("graph-detail-kind").textContent = node.group;
+      byId("graph-detail-title").textContent = node.title;
+      byId("graph-detail-copy").textContent = typeof node.detail === "string"
+        ? node.detail
+        : Object.entries(node.detail || {}).map(([key, value]) =>
+          `${key}: ${value === null || value === undefined ? "Not recorded" : Array.isArray(value) ? value.join(", ") : value}`
+        ).join("\n");
+      card.hidden = false;
+      drawCognitiveMap();
+    }
+
+    function focusGraphNode(node) {
+      graphState.focus = { x: node.x, y: node.y, z: node.z };
+      graphState.zoom = Math.max(graphState.zoom, 1.8);
+      showGraphDetails(node);
+    }
+
+    function graphHitTest(x, y) {
+      let nearest = null;
+      let nearestDistance = 15;
+      for (const node of visibleGraphNodes()) {
+        const point = projectPoint(node);
+        const distance = Math.hypot(point.x - x, point.y - y);
+        if (distance < Math.max(nearestDistance, point.radius + 7)) {
+          nearest = node;
+          nearestDistance = distance;
+        }
+      }
+      return nearest;
+    }
+
+    function changeGraphZoom(factor) {
+      graphState.zoom = Math.max(0.55, Math.min(4, graphState.zoom * factor));
+      drawCognitiveMap();
+    }
+
+    graphCanvas.addEventListener("pointerdown", (event) => {
+      graphCanvas.focus();
+      graphCanvas.setPointerCapture(event.pointerId);
+      graphState.pointers.set(event.pointerId, { x: event.clientX, y: event.clientY });
+      graphState.dragMoved = false;
+      graphState.lastPointer = { x: event.clientX, y: event.clientY };
+    });
+    graphCanvas.addEventListener("pointermove", (event) => {
+      const previous = graphState.pointers.get(event.pointerId);
+      if (previous) {
+        const dx = event.clientX - previous.x;
+        const dy = event.clientY - previous.y;
+        graphState.pointers.set(event.pointerId, { x: event.clientX, y: event.clientY });
+        if (graphState.pointers.size > 1) {
+          const points = [...graphState.pointers.values()];
+          const distance = Math.hypot(points[0].x - points[1].x, points[0].y - points[1].y);
+          if (graphState.pinchDistance) changeGraphZoom(distance / graphState.pinchDistance);
+          graphState.pinchDistance = distance;
+          graphState.dragMoved = true;
+        } else {
+          if (Math.abs(dx) + Math.abs(dy) > 2) graphState.dragMoved = true;
+          graphState.rotationY += dx * 0.008;
+          graphState.rotationX = Math.max(-1.45, Math.min(1.45, graphState.rotationX + dy * 0.008));
+          drawCognitiveMap();
+        }
+        graphState.lastPointer = { x: event.clientX, y: event.clientY };
+      } else {
+        const bounds = graphCanvas.getBoundingClientRect();
+        const node = graphHitTest(event.clientX - bounds.left, event.clientY - bounds.top);
+        const nextHovered = node ? node.id : null;
+        if (nextHovered !== graphState.hovered) {
+          graphState.hovered = nextHovered;
+          graphCanvas.title = node ? `${node.title} · ${node.group}` : "";
+          drawCognitiveMap();
+        }
+      }
+    });
+    graphCanvas.addEventListener("pointerup", (event) => {
+      const bounds = graphCanvas.getBoundingClientRect();
+      const point = { x: event.clientX - bounds.left, y: event.clientY - bounds.top };
+      const wasGesture = graphState.dragMoved;
+      graphState.pointers.delete(event.pointerId);
+      graphState.pinchDistance = null;
+      if (!wasGesture && graphState.pointers.size === 0) {
+        const node = graphHitTest(point.x, point.y);
+        if (node) showGraphDetails(node);
+        else showGraphDetails(null);
+      }
+    });
+    graphCanvas.addEventListener("pointercancel", (event) => {
+      graphState.pointers.delete(event.pointerId);
+      graphState.pinchDistance = null;
+    });
+    graphCanvas.addEventListener("wheel", (event) => {
+      event.preventDefault();
+      changeGraphZoom(event.deltaY < 0 ? 1.12 : 1 / 1.12);
+    }, { passive: false });
+    graphCanvas.addEventListener("dblclick", (event) => {
+      const bounds = graphCanvas.getBoundingClientRect();
+      const node = graphHitTest(event.clientX - bounds.left, event.clientY - bounds.top);
+      if (node) focusGraphNode(node);
+    });
+    graphCanvas.addEventListener("keydown", (event) => {
+      const step = 0.12;
+      if (event.key === "ArrowLeft") graphState.rotationY -= step;
+      else if (event.key === "ArrowRight") graphState.rotationY += step;
+      else if (event.key === "ArrowUp") graphState.rotationX = Math.max(-1.45, graphState.rotationX - step);
+      else if (event.key === "ArrowDown") graphState.rotationX = Math.min(1.45, graphState.rotationX + step);
+      else if (event.key === "+" || event.key === "=") changeGraphZoom(1.15);
+      else if (event.key === "-") changeGraphZoom(1 / 1.15);
+      else if (event.key === "Enter") {
+        const node = graphState.nodes.find((candidate) => candidate.id === graphState.selected);
+        if (node) focusGraphNode(node);
+      } else return;
+      event.preventDefault();
+      drawCognitiveMap();
+    });
+    byId("compress-memory").addEventListener("click", async () => {
+      const maxFragments = Number(byId("memory-max-fragments").value || 8);
+      try {
+        const result = await request("/memory/benchmark", {
+          method: "POST",
+          body: JSON.stringify({ strategy: "evidence_preserving", max_fragments: Math.min(64, Math.max(1, maxFragments)) })
+        });
+        const threshold = Number(result.retention_threshold ?? 0.8);
+        const accepted = result.retention_gate ? Boolean(result.retention_gate.accepted) : Number(result.task_preservation) >= threshold;
+        notify(
+          accepted
+            ? `Retention gate passed: ${(Number(result.task_coverage ?? result.task_preservation) * 100).toFixed(1)}% in-sample memory-key coverage (threshold ${threshold.toFixed(2)}).`
+            : `Retention gate failed: ${(Number(result.task_coverage ?? result.task_preservation) * 100).toFixed(1)}% in-sample memory-key coverage (threshold ${threshold.toFixed(2)}).`
+        );
+        await refresh();
+      } catch (error) {
+        notify(error.message, true);
+      }
+    });
+    byId("graph-zoom-in").addEventListener("click", () => changeGraphZoom(1.25));
+    byId("graph-zoom-out").addEventListener("click", () => changeGraphZoom(1 / 1.25));
+    byId("graph-reset").addEventListener("click", () => {
+      graphState.rotationX = -0.22;
+      graphState.rotationY = 0.32;
+      graphState.zoom = 1;
+      graphState.focus = { x: 0, y: 0, z: 0 };
+      showGraphDetails(null);
+    });
+    byId("graph-filter").addEventListener("change", drawCognitiveMap);
+    byId("graph-detail-close").addEventListener("click", () => showGraphDetails(null));
+    new ResizeObserver(resizeCognitiveMap).observe(graphCanvas);
+    resizeCognitiveMap();
+    requestAnimationFrame(animateCognitiveMap);
+    graphMotionPreference.addEventListener("change", () => {
+      graphState.lastFrameTime = null;
+      if (!graphMotionPreference.matches && !document.hidden) requestAnimationFrame(animateCognitiveMap);
+      else drawCognitiveMap();
+    });
+    document.addEventListener("visibilitychange", () => {
+      graphState.lastFrameTime = null;
+      if (!document.hidden && !graphMotionPreference.matches) requestAnimationFrame(animateCognitiveMap);
+    });
+
+    function svgElement(name, attributes = {}, text = "") {
+      const element = document.createElementNS("http://www.w3.org/2000/svg", name);
+      for (const [key, value] of Object.entries(attributes)) element.setAttribute(key, value);
+      if (text) element.textContent = text;
+      return element;
+    }
+
+    function renderTrend(svgId, noteId, series, emptyMessage) {
+      const svg = byId(svgId);
+      svg.replaceChildren();
+      svg.setAttribute("viewBox", "0 0 360 100");
+      svg.setAttribute("preserveAspectRatio", "none");
+      for (const y of [12, 45, 78]) {
+        svg.append(svgElement("line", { x1: 8, y1: y, x2: 352, y2: y, class: "trend-gridline" }));
+      }
+      const present = series.filter((item) => item.values.length);
+      const count = Math.max(0, ...present.map((item) => item.values.length));
+      if (!count) {
+        byId(noteId).textContent = emptyMessage;
+        return;
+      }
+      for (const item of present) {
+        const values = item.values.slice(-30);
+        const points = values.map((value, index) => ({
+          x: values.length === 1 ? 180 : 12 + index * 336 / (values.length - 1),
+          y: 78 - Math.max(0, Math.min(1, value)) * 66
+        }));
+        if (points.length > 1) {
+          svg.append(svgElement("path", {
+            d: points.map((point, index) => `${index ? "L" : "M"}${point.x},${point.y}`).join(" "),
+            class: `trend-line ${item.className || ""}`
+          }));
+        }
+        for (const point of points) {
+          svg.append(svgElement("circle", {
+            cx: point.x, cy: point.y, r: points.length === 1 ? 3.5 : 2.2,
+            class: `trend-point ${item.className || ""}`
+          }));
+        }
+      }
+      byId(noteId).textContent = `${count} persisted measurement${count === 1 ? "" : "s"} · fixed 0–1 scale`;
+    }
+
+    function renderRows(target, rows, kind, labeler, meta) {
+      target.replaceChildren();
+      if (!rows.length) {
+        const empty = document.createElement("div");
+        empty.className = "empty";
+        empty.textContent = kind === "activity"
+          ? "No learning events yet. Add a consented experience to start."
+          : "No hypotheses yet. Add an episode and source-linked observation first.";
+        target.append(empty);
+        return;
+      }
+      for (const row of rows) {
+        const item = document.createElement("div");
+        item.className = "row";
+        const dot = document.createElement("span");
+        dot.className = "dot";
+        const copy = document.createElement("div");
+        copy.className = "row-copy";
+        const title = document.createElement("strong");
+        title.textContent = labeler(row);
+        const detail = document.createElement("span");
+        detail.textContent = meta(row);
+        copy.append(title, detail);
+        const badge = document.createElement("span");
+        const state = kind === "activity" ? row.kind : row.status;
+        badge.className = `badge ${state || ""}`;
+        badge.textContent = state || kind;
+        item.append(dot, copy, badge);
+        if (kind === "hypothesis" && row.evidence.length) {
+          const evidence = document.createElement("details");
+          evidence.className = "evidence-detail";
+          const summary = document.createElement("summary");
+          summary.textContent = `Inspect ${row.evidence.length} linked source observation(s)`;
+          evidence.append(summary);
+          for (const source of row.evidence) {
+            const line = document.createElement("div");
+            line.className = "evidence-line";
+            line.textContent = `${source.stance}: “${source.statement}” — ${source.episode_title}`;
+            evidence.append(line);
+          }
+          copy.append(evidence);
+        }
+        if (kind === "activity" && row.kind === "episode") {
+          const forget = document.createElement("button");
+          forget.className = "forget-button";
+          forget.type = "button";
+          forget.textContent = "Forget";
+          forget.setAttribute("aria-label", `Forget source episode: ${row.label}`);
+          forget.addEventListener("click", async () => {
+            if (!confirm("Delete this source and all hypotheses, predictions, outcomes, and evaluation history derived from it?")) return;
+            try {
+              await request(`/episodes/${encodeURIComponent(row.id)}`, { method: "DELETE" });
+              notify("Source and linked derived learning deleted.");
+              await refresh();
+            } catch (error) {
+              notify(error.message, true);
+            }
+          });
+          item.append(forget);
+        }
+        target.append(item);
+      }
+    }
+
+    const lastKnownApiData = new Map();
+    const refreshEndpoints = [
+      { key: "dashboard", path: "/dashboard", fallback: null },
+      { key: "episodes", path: "/episodes", fallback: { episodes: [] } },
+      { key: "observations", path: "/observations", fallback: { observations: [] } },
+      { key: "predictions", path: "/predictions", fallback: { predictions: [] } },
+      { key: "evaluations", path: "/evaluations", fallback: { evaluations: [] } },
+      { key: "experiences", path: "/cognition/experiences", fallback: { experiences: [] } },
+      { key: "sleep", path: "/sleep", fallback: { latest: null } },
+      { key: "thoughts", path: "/think", fallback: { latest: null, thoughts: [] } },
+      { key: "reasoning", path: "/reasoning", fallback: { facts: [], rules: [] } }
+    ];
+
+    function isDashboardSnapshot(value) {
+      return Boolean(
+        value && typeof value === "object" &&
+        value.counts && typeof value.counts === "object" &&
+        ["episodes", "observations", "candidate_hypotheses", "validated_traces",
+          "evaluated_outcomes", "unknown_outcomes"].every((field) =>
+          Number.isFinite(Number(value.counts[field]))
+        ) &&
+        Array.isArray(value.activity) && Array.isArray(value.hypotheses) &&
+        value.cognition && typeof value.cognition === "object" &&
+        Array.isArray(value.cognition.specialists) &&
+        Number.isFinite(Number(value.cognition.replay_size)) &&
+        Number.isFinite(Number(value.cognition.neurons)) &&
+        Number.isFinite(Number(value.cognition.synapses)) &&
+        Number.isFinite(Number(value.cognition.synapse_capacity)) &&
+        Number.isFinite(Number(value.cognition.shared_parameter_count)) &&
+        Number.isFinite(Number(value.cognition.stored_experiences)) &&
+        Number.isFinite(Number(value.cognition.specialist_count))
+      );
+    }
+
+    function hasArrayField(value, field) {
+      return Boolean(value && typeof value === "object" && Array.isArray(value[field]));
+    }
+
+    async function refresh() {
+      const settled = await Promise.allSettled(refreshEndpoints.map(
+        (endpoint) => request(endpoint.path)
+      ));
+      const refreshData = {};
+      let hasFailure = false;
+      let usedFirstLoadFallback = false;
+      for (let index = 0; index < refreshEndpoints.length; index++) {
+        const endpoint = refreshEndpoints[index];
+        const response = settled[index];
+        const valid = response.status === "fulfilled" && (
+          endpoint.key === "dashboard"
+            ? isDashboardSnapshot(response.value)
+            : endpoint.key === "sleep" || endpoint.key === "thoughts"
+              ? response.value && typeof response.value === "object"
+              : hasArrayField(response.value, {
+                  episodes: "episodes",
+                  observations: "observations",
+                  predictions: "predictions",
+                  evaluations: "evaluations",
+                  experiences: "experiences",
+                  reasoning: "facts"
+                }[endpoint.key])
+        );
+        if (valid) {
+          lastKnownApiData.set(endpoint.key, response.value);
+          refreshData[endpoint.key] = response.value;
+        } else {
+          hasFailure = true;
+          const lastKnown = lastKnownApiData.get(endpoint.key);
+          if (lastKnown === undefined) usedFirstLoadFallback = true;
+          refreshData[endpoint.key] = lastKnown ?? endpoint.fallback;
+        }
+      }
+      if (!refreshData.dashboard) {
+        byId("connection").textContent = "Dashboard data unavailable";
+        notify("ELIA could not load a valid dashboard snapshot. Check the local API connection and retry.", true);
+        return;
+      }
+      const dashboard = refreshData.dashboard;
+      const episodes = refreshData.episodes;
+      const observations = refreshData.observations;
+      const predictions = refreshData.predictions;
+      const evaluations = refreshData.evaluations;
+      const experiences = refreshData.experiences;
+      const sleep = refreshData.sleep;
+      const thoughtHistory = refreshData.thoughts;
+      const reasoning = refreshData.reasoning;
+      if (hasFailure) {
+        byId("connection").textContent = usedFirstLoadFallback
+          ? "Partial data · unavailable feeds have no saved response"
+          : "Partial data · last successful responses retained";
+        notify(usedFirstLoadFallback
+          ? "Some requests failed; cached responses were retained and feeds without a successful load are left empty."
+          : "Some dashboard requests failed; each affected feed is showing its last successful response.", true);
+      } else {
+        byId("connection").textContent = "Learning locally in real time";
+      }
+      const c = dashboard.counts;
+      byId("episodes-count").textContent = c.episodes;
+      byId("observations-count").textContent = c.observations;
+      byId("candidate-count").textContent = c.candidate_hypotheses;
+      byId("validated-hero").textContent = c.validated_traces;
+      byId("evaluated-count").textContent = c.evaluated_outcomes;
+      byId("unknown-count").textContent = c.unknown_outcomes;
+      const denominator = c.evaluated_outcomes + c.unknown_outcomes;
+      byId("coverage-bar").style.width = `${denominator ? Math.round(100 * c.evaluated_outcomes / denominator) : 0}%`;
+      byId("updated-at").textContent = `Updated ${new Date().toLocaleTimeString()}`;
+      byId("activity-updated").textContent = `${dashboard.activity.length} recent records`;
+      const latestMemory = dashboard.latest_memory_compression;
+      const threshold = latestMemory ? Number(latestMemory.retention_threshold ?? 0.8) : 0.8;
+      const memoryBenchmarked = latestMemory &&
+        latestMemory.coverage_method === "in_sample_normalized_memory_key_coverage_unkeyed_records_lost";
+      const taskCoverage = memoryBenchmarked ? Number(latestMemory.task_coverage ?? 0) : null;
+      const gateAccepted = memoryBenchmarked && latestMemory.retention_gate_accepted !== undefined
+        ? Boolean(Number(latestMemory.retention_gate_accepted))
+        : null;
+      byId("memory-meta").textContent = latestMemory
+        ? `Latest ${new Date(latestMemory.created_at).toLocaleString()}${memoryBenchmarked ? ` · threshold ${threshold.toFixed(2)}` : " · no retention benchmark"}`
+        : "Compression status";
+      byId("memory-strategy").textContent = latestMemory
+        ? `${latestMemory.strategy} · ${latestMemory.retained_units}/${latestMemory.original_units} fragments · ${gateAccepted === null ? "not benchmarked" : gateAccepted ? "retention gate passed" : "retention gate failed"}`
+        : "No compression report yet";
+      byId("memory-detail").textContent = latestMemory
+        ? `${memoryBenchmarked ? `${(taskCoverage * 100).toFixed(1)}% in-sample memory-key coverage · ` : "No retention coverage measured · "}${Number(latestMemory.reduction_ratio * 100).toFixed(1)}% reduction · ${latestMemory.summary}`
+        : "ELIA has not compacted the evidence set yet. Run a compression pass to collapse duplicate evidence into canonical fragments.";
+      const latestSleep = sleep.latest;
+      byId("sleep-summary").textContent = latestSleep
+        ? `Last run ${new Date(latestSleep.created_at).toLocaleString()} · ${latestSleep.evaluated_predictions} resolved predictions / ${latestSleep.hypotheses_evaluated} hypotheses · ${latestSleep.status_changes} status changes · ${latestSleep.contradictory_hypotheses} evidence conflict(s) · Brier ${latestSleep.predictor_brier === null ? "not available" : Number(latestSleep.predictor_brier).toFixed(3)} vs baseline ${latestSleep.baseline_brier === null ? "not available" : Number(latestSleep.baseline_brier).toFixed(3)}`
+        : "No self-evaluation cycle has run yet.";
+      const latestThought = thoughtHistory.latest;
+      byId("thought-title").textContent = latestThought
+        ? latestThought.recommendation.title
+        : "No deliberation recorded yet.";
+      byId("thought-rationale").textContent = latestThought
+        ? `${latestThought.recommendation.rationale} ${latestThought.limitations}`
+        : "ELIA can inspect stored evidence and suggest one next research step. It will not carry it out.";
+      byId("thought-step").textContent = latestThought
+        ? `Suggested step: ${latestThought.recommendation.proposed_step}`
+        : "";
+      renderRows(byId("hypotheses-list"), dashboard.hypotheses, "hypothesis",
+        (row) => row.claim,
+        (row) => {
+          const evidence = `${row.support_count || 0} supporting / ${row.challenge_count || 0} challenging · v${row.version}`;
+          if (row.last_sample_size === null) return `${row.scope.join(", ")} · ${evidence} · not evaluated`;
+          return `${row.scope.join(", ")} · ${evidence} · n=${row.last_sample_size} · Brier ${Number(row.last_predictor_brier).toFixed(3)} vs baseline ${Number(row.last_baseline_brier).toFixed(3)}`;
+        });
+      renderRows(byId("activity-list"), dashboard.activity, "activity",
+        (row) => row.label,
+        (row) => `${row.kind} · ${new Date(row.created_at).toLocaleString()}`);
+      const brain = dashboard.cognition;
+      buildCognitiveMap(dashboard, episodes, observations, predictions, evaluations, experiences);
+      const orderedEvaluations = evaluations.evaluations.slice().reverse();
+      renderTrend("brier-trend", "brier-note", [
+        { values: orderedEvaluations.map((row) => Number(row.predictor_brier)) },
+        { values: orderedEvaluations.map((row) => Number(row.baseline_brier)), className: "surprise" }
+      ], "No evaluation runs recorded yet.");
+      const orderedExperiences = experiences.experiences.slice().reverse();
+      renderTrend("surprise-trend", "surprise-note", [
+        { values: orderedExperiences.map((row) => Number(row.surprise)), className: "surprise" }
+      ], "No verified examples recorded yet.");
+      byId("brier-note").textContent = orderedEvaluations.length
+        ? `${orderedEvaluations.length} stored evaluation${orderedEvaluations.length === 1 ? "" : "s"} · blue: predictor · green: baseline · 0–1 scale`
+        : "No evaluation runs recorded yet.";
+      byId("surprise-note").textContent = orderedExperiences.length
+        ? `${orderedExperiences.length} stored training example${orderedExperiences.length === 1 ? "" : "s"} · 0 = expected · 1 = maximally surprised`
+        : "No verified examples recorded yet.";
+      byId("brain-neurons").textContent = Number(brain.neurons).toLocaleString();
+      byId("brain-synapses").textContent = `${Number(brain.synapses).toLocaleString()} / ${Number(brain.synapse_capacity).toLocaleString()}`;
+      byId("brain-parameters").textContent = Number(brain.shared_parameter_count).toLocaleString();
+      byId("brain-replay").textContent = `${Number(brain.replay_size).toLocaleString()} / ${Number(brain.stored_experiences).toLocaleString()}`;
+      byId("router-summary").textContent = `${brain.specialist_count} learned specialist(s) · abstains on uncertainty`;
+      const specialists = byId("specialist-list");
+      specialists.replaceChildren();
+      if (!brain.specialists.length) {
+        const empty = document.createElement("div");
+        empty.className = "empty";
+        empty.textContent = "No specialist circuits yet. Add a verified, source-linked training example below.";
+        specialists.append(empty);
+      } else {
+        for (const specialist of brain.specialists) {
+          const row = document.createElement("div");
+          row.className = "specialist-row";
+          const id = document.createElement("strong");
+          id.textContent = specialist.id;
+          const updates = document.createElement("span");
+          updates.textContent = `${specialist.updates} training updates`;
+          const params = document.createElement("span");
+          params.textContent = `${specialist.parameter_count} active weights`;
+          row.append(id, updates, params);
+          specialists.append(row);
+        }
+      }
+      fillSelect("observation-form", "episode_id", episodes.episodes, "Choose source episode…",
+        (row) => `${row.title} (${row.id.slice(-8)})`);
+      fillSelect("hypothesis-form", "observation_id", observations.observations, "Choose evidence observation…",
+        (row) => `${row.statement.slice(0, 65)} (${row.id.slice(-8)})`);
+      fillSelect("prediction-form", "hypothesis_id",
+        dashboard.hypotheses.filter((row) => row.status !== "challenged"),
+        "Choose candidate/TRACE…", (row) => `${row.claim.slice(0, 55)} · ${row.status}`);
+      fillSelect("outcome-form", "prediction_id",
+        predictions.predictions.filter((row) => row.observed === null),
+        "Choose unresolved prediction…", (row) => `${row.context.slice(0, 60)} · ${row.id.slice(-8)}`);
+      fillSelect("cognitive-form", "observation_id", observations.observations, "Choose source-linked observation…",
+        (row) => `${row.statement.slice(0, 65)} (${row.id.slice(-8)})`);
+      fillSelect("cognition-counterfactual-form", "episode_id", episodes.episodes,
+        "Choose a source episode with training examples…",
+        (row) => `${row.title} (${row.id.slice(-8)})`);
+      fillSelect("reasoning-fact-form", "observation_id", observations.observations, "Choose source observation…",
+        (row) => `${row.statement.slice(0, 65)} (${row.id.slice(-8)})`);
+      fillSelect("reasoning-rule-form", "observation_id", observations.observations, "Choose source observation…",
+        (row) => `${row.statement.slice(0, 65)} (${row.id.slice(-8)})`);
+      fillSelect("language-interpret-form", "observation_id", observations.observations,
+        "Choose the exact source observation…",
+        (row) => `${row.statement.slice(0, 65)} (${row.id.slice(-8)})`);
+      fillSelect("reasoning-counterfactual-form", "episode_id", episodes.episodes,
+        "Choose a source episode to withhold…",
+        (row) => `${row.title} (${row.id.slice(-8)})`);
+      const moduleSelect = document.querySelector('#cognition-predict-form [name="specialist_id"]');
+      const oldModule = moduleSelect.value;
+      moduleSelect.replaceChildren();
+      option(moduleSelect, "", "Let ELIA route automatically (may abstain)…");
+      for (const specialist of brain.specialists) option(moduleSelect, specialist.id, specialist.id);
+      if ([...moduleSelect.options].some((item) => item.value === oldModule)) moduleSelect.value = oldModule;
+      const counterfactualModuleSelect = document.querySelector(
+        '#cognition-counterfactual-form [name="specialist_id"]'
+      );
+      const oldCounterfactualModule = counterfactualModuleSelect.value;
+      counterfactualModuleSelect.replaceChildren();
+      option(counterfactualModuleSelect, "", "Let ELIA route automatically (may abstain)…");
+      for (const specialist of brain.specialists) {
+        option(counterfactualModuleSelect, specialist.id, specialist.id);
+      }
+      if ([...counterfactualModuleSelect.options].some(
+        (item) => item.value === oldCounterfactualModule
+      )) counterfactualModuleSelect.value = oldCounterfactualModule;
+    }
+
+    async function submitForm(formId, endpoint, buildPayload) {
+      const form = byId(formId);
+      form.addEventListener("submit", async (event) => {
+        event.preventDefault();
+        const values = Object.fromEntries(new FormData(form).entries());
+        try {
+          const payload = buildPayload ? buildPayload(values) : values;
+          const result = await request(endpoint, { method: "POST", body: JSON.stringify(payload) });
+          form.reset();
+          notify(result.results
+            ? (result.results.length
+              ? `Evaluation completed: ${result.results.length} hypothesis result(s).`
+              : "No resolved predictions yet; nothing was evaluated.")
+            : `Saved. Record ID: ${result.id || "complete"}`);
+          await refresh();
+        } catch (error) {
+          notify(error.message, true);
+        }
+      });
+    }
+
+    submitForm("episode-form", "/episodes", (v) => ({ ...v, consented: v.consented === "on" }));
+    submitForm("observation-form", "/observations");
+    submitForm("hypothesis-form", "/hypotheses", (v) => ({
+      claim: v.claim, scope: v.scope.split(",").map((x) => x.trim()).filter(Boolean),
+      conditions: v.conditions.split(",").map((x) => x.trim()).filter(Boolean),
+      expected_outcome: v.expected_outcome,
+      evidence: [{ observation_id: v.observation_id, stance: v.stance }]
+    }));
+    submitForm("prediction-form", "/predictions", (v) => ({
+      ...v, probability: Number(v.probability)
+    }));
+    submitForm("outcome-form", "/outcomes", (v) => ({
+      ...v, observed: v.observed === "null" ? null : v.observed === "true",
+      verification_source: v.verification_source.trim() || null
+    }));
+    submitForm("evaluation-form", "/evaluations", () => ({}));
+    submitForm("cognitive-form", "/cognition/experiences", (v) => ({
+      ...v, specialist_id: v.specialist_id.trim().toLowerCase(), label: v.label === "true",
+      consented: v.consented === "on"
+    }));
+    byId("cognition-predict-form").addEventListener("submit", async (event) => {
+      event.preventDefault();
+      const values = Object.fromEntries(new FormData(event.currentTarget).entries());
+      try {
+        const result = await request("/cognition/predict", {
+          method: "POST",
+          body: JSON.stringify({
+            text: values.text,
+            ...(values.specialist_id ? { specialist_id: values.specialist_id } : {})
+          })
+        });
+        byId("cognition-result").textContent = result.decision === "abstain"
+          ? `ELIA abstained: ${result.reason}. Top profile similarity ${result.routing.top_similarity}; nearest-example similarity ${result.routing.top_example_similarity ?? "n/a"} (threshold ${result.routing.minimum_example_similarity ?? "n/a"}).`
+          : `P(${result.specialist_id}) = ${result.probability}; predicted label ${result.predicted_label}; route ${result.routing_mode}; router margin ${result.routing.margin}; nearest-example similarity ${result.routing.top_example_similarity ?? "n/a"}.`;
+      } catch (error) {
+        notify(error.message, true);
+      }
+    });
+    byId("cognition-counterfactual-form").addEventListener("submit", async (event) => {
+      event.preventDefault();
+      const form = event.currentTarget;
+      const values = Object.fromEntries(new FormData(form).entries());
+      const button = form.querySelector("button[type='submit']");
+      button.disabled = true;
+      try {
+        const result = await request("/cognition/counterfactual", {
+          method: "POST",
+          body: JSON.stringify({
+            episode_id: values.episode_id,
+            text: values.text,
+            ...(values.specialist_id ? { specialist_id: values.specialist_id } : {})
+          })
+        });
+        byId("cognition-counterfactual-result").textContent =
+          `Withheld ${result.withheld_experience_count} example(s); ` +
+          `${result.retained_experience_count} remain.\n` +
+          `Prediction changed: ${result.prediction_changed}\n` +
+          `Probability change without source: ${result.probability_delta_without_source ?? "not comparable"}\n` +
+          `Complete memory:\n${JSON.stringify(result.complete_memory_prediction, null, 2)}\n` +
+          `Without selected source:\n${JSON.stringify(result.without_selected_source_prediction, null, 2)}\n` +
+          result.interpretation_boundary;
+      } catch (error) {
+        byId("cognition-counterfactual-result").textContent = error.message;
+        notify(error.message, true);
+      } finally {
+        button.disabled = false;
+      }
+    });
+    byId("language-interpret-form").addEventListener("submit", async (event) => {
+      event.preventDefault();
+      const form = event.currentTarget;
+      const button = form.querySelector("button[type='submit']");
+      const resultElement = byId("language-result");
+      button.disabled = true;
+      try {
+        const values = Object.fromEntries(new FormData(form).entries());
+        const result = await request("/language/interpret", {
+          method: "POST",
+          body: JSON.stringify({ text: values.text })
+        });
+        pendingLanguageProposals = result.proposals;
+        pendingLanguageText = values.text;
+        resultElement.replaceChildren();
+        const proposalList = document.createElement("ul");
+        for (const [index, proposal] of result.proposals.entries()) {
+          const item = document.createElement("li");
+          const label = document.createElement("label");
+          const checkbox = document.createElement("input");
+          checkbox.type = "checkbox";
+          checkbox.dataset.proposalIndex = String(index);
+          checkbox.style.width = "auto";
+          const fact = document.createElement("code");
+          fact.textContent = proposal.fact;
+          const source = document.createElement("span");
+          source.textContent = ` — “${proposal.text}” [${proposal.start}:${proposal.end}]`;
+          label.append(checkbox, " ", fact, source);
+          item.append(label);
+          proposalList.append(item);
+        }
+        if (result.proposals.length) resultElement.append(proposalList);
+        if (result.unsupported.length) {
+          const unsupportedTitle = document.createElement("p");
+          unsupportedTitle.textContent = "Not interpreted:";
+          const unsupportedList = document.createElement("ul");
+          for (const segment of result.unsupported) {
+            const item = document.createElement("li");
+            item.textContent = `“${segment.text}” — ${segment.reason}`;
+            unsupportedList.append(item);
+          }
+          resultElement.append(unsupportedTitle, unsupportedList);
+        }
+        if (!result.proposals.length && !result.unsupported.length) {
+          resultElement.textContent = "No sentence segments were found.";
+        }
+        byId("language-interpret-form").elements.reviewed.checked = false;
+        byId("language-save-button").disabled = true;
+      } catch (error) {
+        resultElement.textContent = error.message;
+        notify(error.message, true);
+      } finally {
+        button.disabled = false;
+      }
+    });
+    byId("language-interpret-form").addEventListener("change", () => {
+      const form = byId("language-interpret-form");
+      const hasSelection = form.querySelector(
+        "#language-result input[type='checkbox']:checked"
+      ) !== null;
+      byId("language-save-button").disabled = !(
+        hasSelection && form.elements.reviewed.checked
+      );
+    });
+    byId("language-interpret-form").elements.text.addEventListener("input", (event) => {
+      if (event.currentTarget.value === pendingLanguageText) return;
+      pendingLanguageProposals = [];
+      pendingLanguageText = "";
+      byId("language-result").textContent =
+        "Text changed. Run interpretation again before reviewing proposals.";
+      byId("language-save-button").disabled = true;
+    });
+    byId("language-save-button").addEventListener("click", async (event) => {
+      const button = event.currentTarget;
+      const form = byId("language-interpret-form");
+      if (!form.reportValidity()) return;
+      if (!form.elements.observation_id.value) {
+        form.elements.observation_id.focus();
+        notify("Choose the source observation that contains these exact sentences.", true);
+        return;
+      }
+      if (!form.elements.reviewed.checked) {
+        form.elements.reviewed.focus();
+        notify("Confirm that you reviewed the selected facts before saving.", true);
+        return;
+      }
+      const selected = [...form.querySelectorAll(
+        "#language-result input[type='checkbox']:checked"
+      )].map((checkbox) => pendingLanguageProposals[Number(checkbox.dataset.proposalIndex)]);
+      if (!selected.length || !form.elements.reviewed.checked) return;
+      button.disabled = true;
+      try {
+        const result = await request("/reasoning/facts/reviewed-language", {
+          method: "POST",
+          body: JSON.stringify({
+            observation_id: form.elements.observation_id.value,
+            reviewed: true,
+            proposals: selected.map(({ fact, start, end, text }) => ({
+              fact, start, end, text
+            }))
+          })
+        });
+        pendingLanguageProposals = [];
+        pendingLanguageText = "";
+        form.elements.reviewed.checked = false;
+        byId("language-result").textContent =
+          `Saved ${result.count} reviewed, source-linked fact(s).`;
+        notify(`Stored ${result.count} reviewed facts with the selected observation.`);
+        await refresh();
+      } catch (error) {
+        notify(error.message, true);
+      } finally {
+        const hasSelection = form.querySelector(
+          "#language-result input[type='checkbox']:checked"
+        ) !== null;
+        button.disabled = !(
+          hasSelection && form.elements.reviewed.checked
+        );
+      }
+    });
+    for (const [formId, endpoint, field] of [
+      ["reasoning-fact-form", "/reasoning/facts", "fact"],
+      ["reasoning-rule-form", "/reasoning/rules", "rule"]
+    ]) {
+      byId(formId).addEventListener("submit", async (event) => {
+        event.preventDefault();
+        const form = event.currentTarget;
+        const values = Object.fromEntries(new FormData(form).entries());
+        try {
+          const result = await request(endpoint, {
+            method: "POST",
+            body: JSON.stringify({ [field]: values[field], observation_id: values.observation_id })
+          });
+          form.reset();
+          notify(`Stored source-linked ${field}: ${result[field]}`);
+          await refresh();
+        } catch (error) {
+          notify(error.message, true);
+        }
+      });
+    }
+    byId("reasoning-query-form").addEventListener("submit", async (event) => {
+      event.preventDefault();
+      const form = event.currentTarget;
+      const button = form.querySelector("button[type='submit']");
+      button.disabled = true;
+      try {
+        const values = Object.fromEntries(new FormData(form).entries());
+        const result = await request("/reasoning/query", {
+          method: "POST",
+          body: JSON.stringify({ query: values.query })
+        });
+        byId("reasoning-result").textContent = JSON.stringify(result, null, 2);
+      } catch (error) {
+        byId("reasoning-result").textContent = error.message;
+        notify(error.message, true);
+      } finally {
+        button.disabled = false;
+      }
+    });
+    byId("reasoning-counterfactual-form").addEventListener("submit", async (event) => {
+      event.preventDefault();
+      const form = event.currentTarget;
+      const values = Object.fromEntries(new FormData(form).entries());
+      const button = form.querySelector("button[type='submit']");
+      button.disabled = true;
+      try {
+        const result = await request("/reasoning/counterfactual", {
+          method: "POST",
+          body: JSON.stringify({
+            query: values.query,
+            episode_id: values.episode_id
+          })
+        });
+        byId("reasoning-counterfactual-result").textContent =
+          `With source: ${result.with_source.state}\n` +
+          `Without source: ${result.without_source.state}\n` +
+          `State changed: ${result.state_changed}\n` +
+          `Withheld facts/rules: ${result.withheld_fact_count}/${result.withheld_rule_count}\n\n` +
+          `Without-source derivation:\n${JSON.stringify(result.without_source.answers, null, 2)}\n\n` +
+          result.interpretation_boundary;
+      } catch (error) {
+        byId("reasoning-counterfactual-result").textContent = error.message;
+        notify(error.message, true);
+      } finally {
+        button.disabled = false;
+      }
+    });
+    byId("reasoning-resilience-form").addEventListener("submit", async (event) => {
+      event.preventDefault();
+      const form = event.currentTarget;
+      const values = Object.fromEntries(new FormData(form).entries());
+      const button = form.querySelector("button[type='submit']");
+      button.disabled = true;
+      try {
+        const result = await request("/reasoning/resilience", {
+          method: "POST",
+          body: JSON.stringify({ query: values.query })
+        });
+        byId("reasoning-resilience-result").textContent =
+          `Baseline: ${result.baseline.state}\n` +
+          `Single-source robustness: ${result.single_source_resilience}\n` +
+          `Pivotal sources: ${result.pivotal_source_episode_ids.join(", ") || "none"}\n` +
+          `Redundant sources: ${result.redundant_source_episode_ids.join(", ") || "none"}\n\n` +
+          `Details:\n${JSON.stringify(result.sources, null, 2)}\n\n` +
+          result.interpretation_boundary;
+      } catch (error) {
+        byId("reasoning-resilience-result").textContent = error.message;
+        notify(error.message, true);
+      } finally {
+        button.disabled = false;
+      }
+    });
+    byId("reasoning-failure-sets-form").addEventListener("submit", async (event) => {
+      event.preventDefault();
+      const form = event.currentTarget;
+      if (!form.reportValidity()) return;
+      const values = Object.fromEntries(new FormData(form).entries());
+      const button = form.querySelector("button[type='submit']");
+      button.disabled = true;
+      try {
+        const result = await request("/reasoning/failure-sets", {
+          method: "POST",
+          body: JSON.stringify({
+            query: values.query,
+            evaluation_budget: Number(values.evaluation_budget)
+          })
+        });
+        byId("reasoning-failure-sets-result").textContent =
+          `Baseline: ${result.baseline.state}\n` +
+          `Audit complete: ${result.complete} (${result.stopped_reason || "all pairs tested"})\n` +
+          `Evaluations: ${result.evaluations_performed}; pairs checked: ` +
+          `${result.pairs_checked}/${result.pairs_total}\n` +
+          `Reasoning work: ${result.reasoning_work_used}/${result.reasoning_work_budget}; ` +
+          `elapsed ${result.elapsed_ms} ms\n` +
+          `Minimal pair failure sets: ${result.minimal_pair_failure_sets.length}\n\n` +
+          `Failure sets:\n${JSON.stringify(result.minimal_pair_failure_sets, null, 2)}\n\n` +
+          `Pair outcomes:\n${JSON.stringify(result.pair_evaluations, null, 2)}\n\n` +
+          result.interpretation_boundary;
+      } catch (error) {
+        byId("reasoning-failure-sets-result").textContent = error.message;
+        notify(error.message, true);
+      } finally {
+        button.disabled = false;
+      }
+    });
+    byId("language-query-form").addEventListener("submit", async (event) => {
+      event.preventDefault();
+      const form = event.currentTarget;
+      const button = form.querySelector("button[type='submit']");
+      button.disabled = true;
+      try {
+        const values = Object.fromEntries(new FormData(form).entries());
+        const result = await request("/language/query", {
+          method: "POST",
+          body: JSON.stringify({ question: values.question })
+        });
+        const witnesses = result.reasoning.answers
+          .filter((row) => row.state === "supported")
+          .flatMap((row) => Object.values(row.bindings));
+        const answerText = result.template.startsWith("wh_") &&
+          result.answer === "yes" && witnesses.length
+          ? `ELIA: yes — ${witnesses.join(", ")}`
+          : result.answer === "evidence_found"
+            ? "ELIA: I found a stored evidence trail."
+            : result.answer === "claim_refuted"
+              ? "ELIA: stored evidence supports the opposite claim."
+              : `ELIA: ${result.answer}`;
+        byId("language-query-result").textContent =
+          `${answerText}\n` +
+          `Interpreted as: ${result.query}\n` +
+          `Evidence scope: ${result.evidence_scope}\n\n` +
+          (result.evidence_trace
+            ? `Evidence trace (not a causal explanation):\n${JSON.stringify(result.evidence_trace, null, 2)}\n\n`
+            : "") +
+          JSON.stringify(result.reasoning, null, 2);
+      } catch (error) {
+        byId("language-query-result").textContent = error.message;
+        notify(error.message, true);
+      } finally {
+        button.disabled = false;
+      }
+    });
+    byId("refresh-button").addEventListener("click", () => refresh().catch((error) => notify(error.message, true)));
+    byId("sleep-run").addEventListener("click", async (event) => {
+      const button = event.currentTarget;
+      button.disabled = true;
+      try {
+        const report = await request("/sleep", { method: "POST" });
+        notify(
+          `Self-evaluation complete: ${report.evaluated_predictions} resolved predictions, ` +
+          `${report.status_changes} TRACE status changes, ${report.contradictory_hypotheses} evidence conflict(s).`
+        );
+        await refresh();
+      } catch (error) {
+        notify(error.message, true);
+      } finally {
+        button.disabled = false;
+      }
+    });
+    byId("think-run").addEventListener("click", async (event) => {
+      const button = event.currentTarget;
+      button.disabled = true;
+      try {
+        const result = await request("/think", { method: "POST", body: JSON.stringify({}) });
+        notify(`ELIA considered the stored evidence and proposes: ${result.recommendation.title}`);
+        await refresh();
+      } catch (error) {
+        notify(error.message, true);
+      } finally {
+        button.disabled = false;
+      }
+    });
+
+    refresh().catch((error) => {
+      byId("connection").textContent = "Local API unavailable";
+      notify(`Could not load ELIA data: ${error.message}. Start the Python service locally.`, true);
+    });
+    setInterval(() => refresh().catch((error) => {
+      byId("connection").textContent = "Connection interrupted";
+      console.error("ELIA refresh failed:", error);
+    }), 5000);
+  </script>
+</body>
+</html>
